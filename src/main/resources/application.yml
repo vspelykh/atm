@@ -1,0 +1,25 @@
+# Database configuration
+spring:
+  thymeleaf:
+    check-template-location: false
+  datasource:
+    url: jdbc:postgresql://localhost:5432/atm
+    username: postgres
+    password: password
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+    # Dialect configuration for PostgreSQL
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true # Enable formatting of SQL queries for better readability.
+        use_sql_comments: true # Enable comments in SQL queries for debugging purposes.
+        jdbc.time_zone: UTC # Set the database time zone to UTC.
+
+    # Package configuration where entities are located
+    packages-to-scan: ua.vspelykh.model.entity
+    open-in-view: false
