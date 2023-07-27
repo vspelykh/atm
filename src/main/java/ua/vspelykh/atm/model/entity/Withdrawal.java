@@ -42,10 +42,6 @@ public class Withdrawal extends AbstractBaseEntity {
     @JoinColumn(name = ATM_ID)
     private ATM atm;
 
-    @ManyToOne
-    @JoinColumn(name = USER_ID)
-    private User user;
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

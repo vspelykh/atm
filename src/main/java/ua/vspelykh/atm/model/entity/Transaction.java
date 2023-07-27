@@ -42,10 +42,6 @@ public class Transaction extends AbstractBaseEntity {
     @JoinColumn(name = DESTINATION_ACCOUNT_ID)
     private Account destinationAccount;
 
-    @NotNull
-    @Column(name = USER_ID)
-    private Integer userId;
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
