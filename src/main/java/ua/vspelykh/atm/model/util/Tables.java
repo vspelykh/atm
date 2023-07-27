@@ -17,5 +17,6 @@ public class Tables {
     public static final String TRANSACTIONS = "transactions";
     public static final String WITHDRAWALS = "withdrawals";
     public static final String ATMS = "atms";
+    public static final String BANKNOTES = "atm_banknotes";
 
 }

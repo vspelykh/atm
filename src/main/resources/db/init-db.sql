@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS withdrawals;
 DROP TABLE IF EXISTS transactions;
 DROP TABLE IF EXISTS accounts;
+DROP TABLE IF EXISTS atm_banknotes;
 DROP TABLE IF EXISTS atms;
 DROP TABLE IF EXISTS users;
 
@@ -32,11 +33,10 @@ CREATE TABLE transactions
     amount                 NUMERIC(12, 2) NOT NULL,
     transaction_date       TIMESTAMP      NOT NULL,
     source_account_id      INTEGER REFERENCES accounts (id),
-    destination_account_id INTEGER REFERENCES accounts (id),
-    user_id                INTEGER REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
+    destination_account_id INTEGER REFERENCES accounts (id)
 );
 
-CREATE INDEX idx_transactions_user_id ON transactions (user_id);
+CREATE INDEX idx_transactions_user_id ON transactions (source_account_id);
 
 CREATE TABLE atms
 (
@@ -45,14 +45,21 @@ CREATE TABLE atms
     availability VARCHAR(3)   NOT NULL
 );
 
+CREATE TABLE atm_banknotes
+(
+    id         SERIAL PRIMARY KEY,
+    atm_id     INTEGER REFERENCES atms (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    denomination INTEGER NOT NULL,
+    quantity   INTEGER NOT NULL
+);
+
 CREATE TABLE withdrawals
 (
     id               SERIAL PRIMARY KEY,
     amount           NUMERIC(12, 2)          NOT NULL,
     transaction_date TIMESTAMP DEFAULT NOW() NOT NULL,
     account_id       INTEGER REFERENCES accounts (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    atm_id           INTEGER REFERENCES atms (id),
-    user_id          INTEGER REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
+    atm_id           INTEGER REFERENCES atms (id)
 );
 
 CREATE INDEX idx_withdrawals_account_id ON withdrawals (account_id);

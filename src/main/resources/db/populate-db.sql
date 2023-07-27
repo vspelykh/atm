@@ -8,12 +8,20 @@ VALUES ('1234567890123456', 5000.00, 1, 'pass123', '2023-07-23'),
        ('9876543210987654', 3000.00, 2, 'pass456', '2023-07-23'),
        ('1111222233334444', 10000.00, 3, 'pass789', '2023-07-23');
 
-INSERT INTO transactions (amount, transaction_date, source_account_id, destination_account_id, user_id)
-VALUES (1000.00, '2023-07-23 10:30:00', 1, NULL, 1),
-       (2000.00, '2023-07-23 11:15:00', NULL, 2, 2),
-       (500.00, '2023-07-23 12:00:00', 3, 1, 3);
+INSERT INTO transactions (amount, transaction_date, source_account_id, destination_account_id)
+VALUES (1000.00, '2023-07-23 10:30:00', 1, NULL),
+       (2000.00, '2023-07-23 11:15:00', NULL, 2),
+       (500.00, '2023-07-23 12:00:00', 3, 1);
 
 INSERT INTO atms (location, availability)
 VALUES ('New York, 5th Avenue', 'Yes'),
        ('San Francisco, Market St', 'Yes'),
        ('Los Angeles, Hollywood Blvd', 'No');
+
+INSERT INTO atm_banknotes (atm_id, denomination, quantity)
+VALUES (1, 10, 100),
+       (1, 20, 100),
+       (1, 50, 50),
+       (1, 100, 150),
+       (1, 200, 200),
+       (1, 500, 50);
