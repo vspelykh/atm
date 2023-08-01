@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Симулятор ATM</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto&display=swap">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $.ajax({
+                url: "/api/atms",
+                type: "GET",
+                dataType: "json",
+                success: function(data) {
+                    var tableBody = $("#usersTableBody");
+                    tableBody.empty(); // Очищаємо таблицю перед заповненням новими даними
+
+                    // Додаємо рядки з даними в таблицю
+                    for (var i = 0; i < data.length; i++) {
+                        var user = data[i];
+                        var row = "<tr><td>" + user.availability + "</td><td>" + user.location + "</td></tr>";
+                        tableBody.append(row);
+                    }
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        });
+    </script>
+</head>
+
+<body>
+<!-- Полоса для назви (хедер) -->
+<header>
+    <h1>Симулятор ATM</h1>
+    <hr>
+</header>
+
+<!-- Три ряди кнопок -->
+<main>
+    <div class="button-row">
+        <!-- Код таблиці та результату AJAX запиту до REST контроллера тут -->
+        <h1>Список користувачів</h1>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Ім'я</th>
+            </tr>
+            </thead>
+            <tbody id="usersTableBody">
+            <!-- Рядки з даними будуть додаватись сюди -->
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<!-- Футер -->
+<footer>
+    <p>© 2023 Ваша компанія. Усі права захищені.</p>
+</footer>
+</body>
+
+</html>
