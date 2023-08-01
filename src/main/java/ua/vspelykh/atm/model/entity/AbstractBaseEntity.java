@@ -2,6 +2,7 @@ package ua.vspelykh.atm.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import ua.vspelykh.atm.model.util.Columns;
 
 /**
@@ -17,6 +18,7 @@ import ua.vspelykh.atm.model.util.Columns;
 @Getter
 @Setter
 @ToString
+@SuperBuilder
 public abstract class AbstractBaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id

@@ -3,6 +3,7 @@ package ua.vspelykh.atm.model.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.Hibernate;
 
 import java.math.BigDecimal;
@@ -24,6 +25,7 @@ import static ua.vspelykh.atm.model.util.Tables.WITHDRAWALS;
 @ToString(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@SuperBuilder
 public class Withdrawal extends AbstractBaseEntity {
 
     @NotNull

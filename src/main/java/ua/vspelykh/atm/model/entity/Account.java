@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.Hibernate;
 
 import java.math.BigDecimal;
@@ -16,6 +17,7 @@ import static ua.vspelykh.atm.model.util.Tables.ACCOUNTS;
 
 /**
  * Represents an account in the ATM system.
+ *
  * @version 1.0
  */
 @Entity
@@ -25,6 +27,7 @@ import static ua.vspelykh.atm.model.util.Tables.ACCOUNTS;
 @ToString(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@SuperBuilder
 public class Account extends AbstractBaseEntity {
 
     @NotBlank

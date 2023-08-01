@@ -1,16 +1,16 @@
 package ua.vspelykh.atm.model.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
-import java.io.Serializable;
-
-@Data
+@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class ATMDTO implements Serializable {
-    private Integer id;
+@Getter
+@Setter
+@ToString
+@SuperBuilder
+public class ATMDTO extends AbstractDTO {
     private String location;
     private String availability;
 }

@@ -3,6 +3,7 @@ package ua.vspelykh.atm.model.entity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import static ua.vspelykh.atm.model.util.Tables.BANKNOTES;
 
@@ -18,6 +19,7 @@ import static ua.vspelykh.atm.model.util.Tables.BANKNOTES;
 @ToString(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@SuperBuilder
 public class Banknote extends AbstractBaseEntity {
     private int atmId;
     private int denomination;

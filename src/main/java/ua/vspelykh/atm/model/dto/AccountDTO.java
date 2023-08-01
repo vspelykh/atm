@@ -1,18 +1,19 @@
 package ua.vspelykh.atm.model.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-@Data
+@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class AccountDTO implements Serializable {
-    private Integer id;
+@Getter
+@Setter
+@ToString
+@SuperBuilder
+public class AccountDTO extends AbstractDTO {
     private String accountNumber;
     private BigDecimal balance;
     private Integer userId;
