@@ -7,6 +7,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.Hibernate;
 
 import java.util.HashSet;
@@ -28,6 +29,7 @@ import static ua.vspelykh.atm.model.util.Tables.USERS;
 @ToString(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@SuperBuilder
 public class User extends AbstractBaseEntity {
 
     @NotBlank
