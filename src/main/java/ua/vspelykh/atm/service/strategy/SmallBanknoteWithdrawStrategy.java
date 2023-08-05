@@ -15,7 +15,6 @@ import java.util.Optional;
  * It allows withdrawing money using a combination of 50s, 20s, and 10s banknotes.
  * The maximum amount that can be withdrawn is 400 units.
  * The strategy aims to minimize the number of banknotes used for the withdrawal.
- * The strategy ensures that at least half of the withdrawal amount is covered by 50s banknotes,
  * and the remaining amount is covered by 20s and 10s banknotes.
  *
  * @version 1.0
@@ -24,8 +23,6 @@ import java.util.Optional;
 public class SmallBanknoteWithdrawStrategy extends AbstractWithdrawStrategy {
 
     private static final int MAX_AMOUNT = 400;
-    private static final int QUANTITY_1 = 1;
-    private static final int QUANTITY_2 = 2;
 
     /**
      * Creates a new instance of SmallBanknoteWithdrawStrategy.
@@ -42,7 +39,7 @@ public class SmallBanknoteWithdrawStrategy extends AbstractWithdrawStrategy {
      * @param amountToWithdraw   The amount to withdraw.
      * @param availableBanknotes The list of available banknotes in the ATM.
      * @return A list of BanknoteDTO representing the withdrawal.
-     *         If withdrawal is not possible, returns an empty list.
+     * If withdrawal is not possible, returns an empty list.
      */
     @Override
     public List<BanknoteDTO> withdraw(int amountToWithdraw, List<Banknote> availableBanknotes) {
@@ -63,40 +60,27 @@ public class SmallBanknoteWithdrawStrategy extends AbstractWithdrawStrategy {
         List<BanknoteDTO> withdrawalBanknotes = new ArrayList<>();
         int remainingAmount = amountToWithdraw;
 
+        // Withdraw 20s and 10s first for amounts less than 50
         remainingAmount = withdraw20sAnd10(availableBanknotes, withdrawalBanknotes, remainingAmount);
+
+        // Withdraw 50s for the remaining amount (if available)
         remainingAmount = withdraw50s(availableBanknotes, withdrawalBanknotes, remainingAmount);
+
+        // Withdraw the remaining amount using mixed denominations
         if (remainingAmount != 0) {
-            remainingAmount = withdrawRemaining(availableBanknotes, withdrawalBanknotes, remainingAmount);
+            remainingAmount = withdrawRemaining(AVAILABLE_SMALL_DENOMINATIONS, availableBanknotes, withdrawalBanknotes,
+                    remainingAmount);
         }
 
         return remainingAmount == 0 ? withdrawalBanknotes : rollback(withdrawalBanknotes, availableBanknotes);
     }
 
     /**
-     * Private helper method to withdraw banknotes of denomination 20s and 10s.
-     *
-     * @param availableBanknotes The list of available banknotes in the ATM.
-     * @param withdrawalBanknotes The list of banknotes to be withdrawn.
-     * @param remainingAmount    The remaining amount to withdraw.
-     * @return The updated remaining amount after withdrawing 50s.
-     */
-    private int withdraw20sAnd10(List<Banknote> availableBanknotes, List<BanknoteDTO> withdrawalBanknotes, int remainingAmount) {
-        if (getIfPossibleToWithdraw(availableBanknotes, DENOMINATION_20, QUANTITY_2).isPresent()
-                && getIfPossibleToWithdraw(availableBanknotes, DENOMINATION_10, QUANTITY_1).isPresent()) {
-            Optional<Banknote> optionalBanknote = getIfPossibleToWithdraw(availableBanknotes, DENOMINATION_20, QUANTITY_2);
-            optionalBanknote.ifPresent(banknote -> withdrawBanknote(withdrawalBanknotes, banknote, QUANTITY_2));
-            Optional<Banknote> optionalBanknote2 = getIfPossibleToWithdraw(availableBanknotes, DENOMINATION_10, QUANTITY_1);
-            optionalBanknote2.ifPresent(banknote -> withdrawBanknote(withdrawalBanknotes, banknote, QUANTITY_1));
-        }
-        return remainingAmount - DENOMINATION_50;
-    }
-
-    /**
      * Private helper method to withdraw banknotes of denomination 50s.
      *
-     * @param availableBanknotes The list of available banknotes in the ATM.
+     * @param availableBanknotes  The list of available banknotes in the ATM.
      * @param withdrawalBanknotes The list of banknotes to be withdrawn.
-     * @param remainingAmount    The remaining amount to withdraw.
+     * @param remainingAmount     The remaining amount to withdraw.
      * @return The updated remaining amount after withdrawing 50s.
      */
     private int withdraw50s(List<Banknote> availableBanknotes, List<BanknoteDTO> withdrawalBanknotes, int remainingAmount) {
@@ -105,27 +89,6 @@ public class SmallBanknoteWithdrawStrategy extends AbstractWithdrawStrategy {
         if (optionalBanknote.isPresent()) {
             withdrawBanknote(withdrawalBanknotes, optionalBanknote.get(), quantityToWithdraw);
             return remainingAmount - (quantityToWithdraw * DENOMINATION_50);
-        }
-        return remainingAmount;
-    }
-
-    /**
-     * Private helper method to withdraw the remaining amount using 20s and 10s banknotes.
-     *
-     * @param availableBanknotes The list of available banknotes in the ATM.
-     * @param withdrawalBanknotes The list of banknotes to be withdrawn.
-     * @param remainingAmount    The remaining amount to withdraw.
-     * @return The updated remaining amount after withdrawing the remaining banknotes.
-     */
-    private int withdrawRemaining(List<Banknote> availableBanknotes, List<BanknoteDTO> withdrawalBanknotes, int remainingAmount) {
-        for (int denomination : AVAILABLE_SMALL_DENOMINATIONS) {
-            do {
-                Optional<Banknote> optionalBanknote = getIfPossibleToWithdraw(availableBanknotes, denomination, QUANTITY_1);
-                if (optionalBanknote.isPresent() && remainingAmount >= denomination) {
-                    withdrawBanknote(withdrawalBanknotes, optionalBanknote.get(), QUANTITY_1);
-                    remainingAmount -= denomination;
-                } else break;
-            } while (true);
         }
         return remainingAmount;
     }
@@ -142,14 +105,24 @@ public class SmallBanknoteWithdrawStrategy extends AbstractWithdrawStrategy {
         if (amountToWithdraw > MAX_AMOUNT) {
             return false;
         }
-        Optional<Banknote> optionalBanknote = availableBanknotes.stream()
-                .filter(banknote -> banknote.getDenomination() == DENOMINATION_50)
-                .findFirst();
-        if (optionalBanknote.isPresent() && optionalBanknote.get().getQuantity() == 0) {
+        Optional<Banknote> optionalBanknote = getBanknoteForVerify(availableBanknotes, DENOMINATION_50);
+        if (isATMHasBanknote(optionalBanknote.isPresent() && optionalBanknote.get().getQuantity() == 0)) {
             return false;
         }
+        return mockWithdrawAndRollback(amountToWithdraw, availableBanknotes);
+    }
+
+    /**
+     * Private helper method to mock the withdrawal of the requested amount using available banknotes
+     * and then rolls back the changes.
+     *
+     * @param amountToWithdraw   The amount to withdraw.
+     * @param availableBanknotes The list of available banknotes in the ATM.
+     * @return true if the withdrawal was successful, otherwise false.
+     */
+    private boolean mockWithdrawAndRollback(int amountToWithdraw, List<Banknote> availableBanknotes) {
         List<BanknoteDTO> banknotesForWithdraw = getBanknoteDTOS(amountToWithdraw, availableBanknotes);
-        if (banknotesForWithdraw.isEmpty() || !isAmountCorrect(banknotesForWithdraw, amountToWithdraw)) {
+        if (banknotesForWithdraw.isEmpty() || isAmountIncorrect(banknotesForWithdraw, amountToWithdraw)) {
             rollback(banknotesForWithdraw, availableBanknotes);
             return false;
         } else {
