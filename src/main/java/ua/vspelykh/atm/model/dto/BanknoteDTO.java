@@ -8,10 +8,15 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
+//@ToString
 @SuperBuilder
 public class BanknoteDTO extends AbstractDTO {
     private Integer atmId;
     private Integer denomination;
     private int quantity;
+
+    @Override
+    public String toString() {
+        return denomination + " * " + quantity;
+    }
 }
