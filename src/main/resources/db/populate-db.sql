@@ -9,8 +9,8 @@ VALUES ('1234567890123456', 5000.00, 1, 'pass123', '2023-07-23'),
        ('1111222233334444', 10000.00, 3, 'pass789', '2023-07-23');
 
 INSERT INTO transactions (amount, transaction_date, source_account_id, destination_account_id)
-VALUES (1000.00, '2023-07-23 10:30:00', 1, NULL),
-       (2000.00, '2023-07-23 11:15:00', NULL, 2),
+VALUES (1000.00, '2023-07-23 10:30:00', 1, 2),
+       (2000.00, '2023-07-23 11:15:00', 1, 3),
        (500.00, '2023-07-23 12:00:00', 3, 1);
 
 INSERT INTO atms (location, availability)

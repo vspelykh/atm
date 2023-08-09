@@ -39,8 +39,10 @@ public abstract class AbstractWithdrawStrategy implements WithdrawStrategy {
     // Arrays of available banknote denominations for different strategies
     protected static final int[] AVAILABLE_SMALL_DENOMINATIONS = {DENOMINATION_50, DENOMINATION_20, DENOMINATION_10};
     protected static final int[] AVAILABLE_BIG_DENOMINATIONS = {DENOMINATION_500, DENOMINATION_200, DENOMINATION_100};
-    protected static final int[] AVAILABLE_MIXED_DENOMINATIONS = {DENOMINATION_100, DENOMINATION_50, DENOMINATION_20,
-            DENOMINATION_10};
+    protected static final int[] AVAILABLE_MIXED_DENOMINATIONS = {DENOMINATION_200, DENOMINATION_100,
+            DENOMINATION_50, DENOMINATION_20, DENOMINATION_10};
+    protected static final int[] FILLABLE_MIXED_DENOMINATIONS = {DENOMINATION_200, DENOMINATION_100,
+            DENOMINATION_50, DENOMINATION_20, DENOMINATION_10};
 
     /**
      * Helper method to check if it's possible to withdraw the specified quantity of banknotes of a given denomination.

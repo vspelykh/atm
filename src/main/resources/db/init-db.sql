@@ -32,8 +32,8 @@ CREATE TABLE transactions
     id                     SERIAL PRIMARY KEY,
     amount                 NUMERIC(12, 2) NOT NULL,
     transaction_date       TIMESTAMP      NOT NULL,
-    source_account_id      INTEGER REFERENCES accounts (id),
-    destination_account_id INTEGER REFERENCES accounts (id)
+    source_account_id      INTEGER NOT NULL REFERENCES accounts (id),
+    destination_account_id INTEGER NOT NULL REFERENCES accounts (id)
 );
 
 CREATE INDEX idx_transactions_user_id ON transactions (source_account_id);

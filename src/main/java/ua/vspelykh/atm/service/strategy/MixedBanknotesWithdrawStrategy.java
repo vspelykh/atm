@@ -19,7 +19,7 @@ import java.util.Optional;
 @Component
 public class MixedBanknotesWithdrawStrategy extends AbstractWithdrawStrategy {
 
-    private static final int MIN_AMOUNT = 500;
+    private static final int MIN_AMOUNT = 400;
     private static final int MAX_AMOUNT = 2000;
 
     /**
@@ -34,8 +34,8 @@ public class MixedBanknotesWithdrawStrategy extends AbstractWithdrawStrategy {
     /**
      * Withdraws the specified amount using mixed banknotes.
      *
-     * @param amountToWithdraw    The amount to be withdrawn.
-     * @param availableBanknotes  The list of available banknotes in the ATM.
+     * @param amountToWithdraw   The amount to be withdrawn.
+     * @param availableBanknotes The list of available banknotes in the ATM.
      * @return A list of BanknoteDTO representing the withdrawn banknotes, or an empty list if withdrawal is not possible.
      */
     @Override
@@ -49,8 +49,8 @@ public class MixedBanknotesWithdrawStrategy extends AbstractWithdrawStrategy {
     /**
      * Checks if the withdrawal of the specified amount is possible using mixed banknotes.
      *
-     * @param amountToWithdraw    The amount to be withdrawn.
-     * @param availableBanknotes  The list of available banknotes in the ATM.
+     * @param amountToWithdraw   The amount to be withdrawn.
+     * @param availableBanknotes The list of available banknotes in the ATM.
      * @return true if the withdrawal is possible, otherwise false.
      */
     @Override
@@ -70,8 +70,8 @@ public class MixedBanknotesWithdrawStrategy extends AbstractWithdrawStrategy {
     /**
      * Mocks the withdrawal of the specified amount using mixed banknotes and then rolls back the changes.
      *
-     * @param amountToWithdraw    The amount to be withdrawn.
-     * @param availableBanknotes  The list of available banknotes in the ATM.
+     * @param amountToWithdraw   The amount to be withdrawn.
+     * @param availableBanknotes The list of available banknotes in the ATM.
      * @return true if the withdrawal was successful, otherwise false.
      */
     protected boolean mockWithdrawAndRollback(int amountToWithdraw, List<Banknote> availableBanknotes) {
@@ -88,8 +88,8 @@ public class MixedBanknotesWithdrawStrategy extends AbstractWithdrawStrategy {
     /**
      * Gets the list of BanknoteDTO representing the withdrawn banknotes using mixed banknotes.
      *
-     * @param amountToWithdraw    The amount to be withdrawn.
-     * @param availableBanknotes  The list of available banknotes in the ATM.
+     * @param amountToWithdraw   The amount to be withdrawn.3
+     * @param availableBanknotes The list of available banknotes in the ATM.
      * @return A list of BanknoteDTO representing the withdrawn banknotes.
      */
     private List<BanknoteDTO> getBanknotesDTOS(int amountToWithdraw, List<Banknote> availableBanknotes) {
@@ -97,44 +97,39 @@ public class MixedBanknotesWithdrawStrategy extends AbstractWithdrawStrategy {
         int remainingAmount = amountToWithdraw;
 
         // Withdraw 500 banknotes first for amounts >= 1000
-        if (remainingAmount >= 1000) {
-            Optional<Banknote> optionalBanknote = getIfPossibleToWithdraw(availableBanknotes, DENOMINATION_500, QUANTITY_1);
-            if (optionalBanknote.isPresent()) {
-                withdrawBanknote(withdrawalBanknotes, optionalBanknote.get(), QUANTITY_1);
-                remainingAmount -= (QUANTITY_1 * DENOMINATION_500);
-            }
-        }
+        remainingAmount = withdrawBanknote(remainingAmount, 1000, availableBanknotes, DENOMINATION_500, QUANTITY_1, withdrawalBanknotes);
 
-        // Withdraw 20s and 10s for amounts < 1000
+        // Withdraw 20s and 10s
         for (int i = 0; i < 2; i++) {
             remainingAmount = withdraw20sAnd10(availableBanknotes, withdrawalBanknotes, remainingAmount);
         }
 
+        remainingAmount = withdrawBanknote(remainingAmount, 0, availableBanknotes, DENOMINATION_50, QUANTITY_2, withdrawalBanknotes);
+
         // Withdraw 200 banknotes for amounts >= 500
-        if (remainingAmount >= 500) {
-            Optional<Banknote> optionalBanknote = getIfPossibleToWithdraw(availableBanknotes, DENOMINATION_200, QUANTITY_1);
-            if (optionalBanknote.isPresent()) {
-                withdrawBanknote(withdrawalBanknotes, optionalBanknote.get(), QUANTITY_1);
-                remainingAmount -= (QUANTITY_1 * DENOMINATION_200);
-            }
-        }
+        remainingAmount = withdrawBanknote(remainingAmount, 500, availableBanknotes, DENOMINATION_200, QUANTITY_1, withdrawalBanknotes);
 
         // Withdraw 100 banknotes for amounts >= 300
-        if (remainingAmount >= 300) {
-            Optional<Banknote> optionalBanknote = getIfPossibleToWithdraw(availableBanknotes, DENOMINATION_100, QUANTITY_2);
-            if (optionalBanknote.isPresent()) {
-                withdrawBanknote(withdrawalBanknotes, optionalBanknote.get(), QUANTITY_2);
-                remainingAmount -= (QUANTITY_2 * DENOMINATION_100);
-            }
-        }
+        remainingAmount = withdrawBanknote(remainingAmount, 300, availableBanknotes, DENOMINATION_100, QUANTITY_2, withdrawalBanknotes);
 
         // Withdraw the remaining amount using mixed denominations
         if (remainingAmount != 0) {
-            remainingAmount = withdrawRemaining(AVAILABLE_MIXED_DENOMINATIONS, availableBanknotes, withdrawalBanknotes,
+            remainingAmount = withdrawRemaining(FILLABLE_MIXED_DENOMINATIONS, availableBanknotes, withdrawalBanknotes,
                     remainingAmount);
         }
 
         return remainingAmount == 0 ? withdrawalBanknotes : rollback(withdrawalBanknotes, availableBanknotes);
+    }
+
+    private int withdrawBanknote(int remainingAmount, int x, List<Banknote> availableBanknotes, int denomination200, int quantity1, List<BanknoteDTO> withdrawalBanknotes) {
+        if (remainingAmount >= x) {
+            Optional<Banknote> optionalBanknote = getIfPossibleToWithdraw(availableBanknotes, denomination200, quantity1);
+            if (optionalBanknote.isPresent()) {
+                withdrawBanknote(withdrawalBanknotes, optionalBanknote.get(), quantity1);
+                remainingAmount -= (quantity1 * denomination200);
+            }
+        }
+        return remainingAmount;
     }
 
     /**

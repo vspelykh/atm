@@ -72,10 +72,10 @@ public class BigBanknoteWithdrawStrategy extends AbstractWithdrawStrategy {
     /**
      * Private helper method to withdraw banknotes of a specific denomination from the available banknotes.
      *
-     * @param denominations      The denominations to use for withdrawal (big or small banknotes).
-     * @param availableBanknotes The list of available banknotes in the ATM.
+     * @param denominations       The denominations to use for withdrawal (big or small banknotes).
+     * @param availableBanknotes  The list of available banknotes in the ATM.
      * @param withdrawalBanknotes A list to store the banknotes being withdrawn.
-     * @param remainingAmount    The remaining amount to withdraw.
+     * @param remainingAmount     The remaining amount to withdraw.
      * @return The remaining amount after withdrawal.
      */
     private int withdrawBanknotes(int[] denominations, List<Banknote> availableBanknotes, List<BanknoteDTO> withdrawalBanknotes,
@@ -89,12 +89,32 @@ public class BigBanknoteWithdrawStrategy extends AbstractWithdrawStrategy {
             if (optionalBanknote.isPresent()) {
                 withdrawBanknote(withdrawalBanknotes, optionalBanknote.get(), quantityToWithdraw);
                 remainingAmount -= (quantityToWithdraw * denomination);
+            } else {
+                Optional<Banknote> optionalAllQuantityBanknote = getAllPossibleToWithdraw(availableBanknotes, denomination);
+                if (optionalAllQuantityBanknote.isPresent()) {
+                    int quantity = optionalAllQuantityBanknote.get().getQuantity();
+                    withdrawBanknote(withdrawalBanknotes, optionalAllQuantityBanknote.get(), quantity);
+                    remainingAmount -= (quantity * denomination);
+                }
             }
             if (remainingAmount == 0) {
                 return remainingAmount;
             }
         }
         return remainingAmount;
+    }
+
+    /**
+     * Helper method to check if it's possible to withdraw all quantity of banknotes of a given denomination.
+     *
+     * @param availableBanknotes The list of available banknotes in the ATM.
+     * @param denomination       The denomination of the banknote to withdraw.
+     * @return An Optional containing the Banknote to withdraw if possible, or an empty Optional if not possible.
+     */
+    private Optional<Banknote> getAllPossibleToWithdraw(List<Banknote> availableBanknotes, int denomination) {
+        return availableBanknotes.stream()
+                .filter(banknote -> banknote.getDenomination() == denomination)
+                .findFirst();
     }
 
     /**
