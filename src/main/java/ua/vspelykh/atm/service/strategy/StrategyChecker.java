@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ua.vspelykh.atm.model.entity.Banknote;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -18,32 +18,19 @@ import java.util.List;
 @RequiredArgsConstructor
 public class StrategyChecker {
 
-    private final WithdrawStrategy smallBanknoteWithdrawStrategy;
-    private final WithdrawStrategy bigBanknoteWithdrawStrategy;
-    private final WithdrawStrategy mixedBanknotesWithdrawStrategy;
+    private final List<WithdrawStrategy> withdrawalStrategies;
 
-    /**
-     * Checks and retrieves the allowed withdrawal strategies for a given withdrawal amount and the available banknotes.
-     *
-     * @param amountToWithdraw   The amount to be withdrawn.
-     * @param availableBanknotes The list of available banknotes in the ATM.
-     * @return A list of allowed withdrawal strategies.
-     */
-    public List<WithdrawStrategy> getAllowedStrategies(int amountToWithdraw, List<Banknote> availableBanknotes) {
-        List<WithdrawStrategy> allowedStrategies = new ArrayList<>();
+    public List<StrategyType> getAllowedStrategies(int amountToWithdraw, List<Banknote> availableBanknotes) {
+        return withdrawalStrategies.stream()
+                .filter(strategy -> strategy.isWithdrawPossible(amountToWithdraw, availableBanknotes))
+                .map(WithdrawStrategy::getStrategyType)
+                .collect(Collectors.toList());
+    }
 
-        if (smallBanknoteWithdrawStrategy.isWithdrawPossible(amountToWithdraw, availableBanknotes)) {
-            allowedStrategies.add(smallBanknoteWithdrawStrategy);
-        }
-
-        if (bigBanknoteWithdrawStrategy.isWithdrawPossible(amountToWithdraw, availableBanknotes)) {
-            allowedStrategies.add(bigBanknoteWithdrawStrategy);
-        }
-
-        if (mixedBanknotesWithdrawStrategy.isWithdrawPossible(amountToWithdraw, availableBanknotes)) {
-            allowedStrategies.add(mixedBanknotesWithdrawStrategy);
-        }
-
-        return allowedStrategies;
+    public WithdrawStrategy getStrategy(StrategyType strategyType) {
+        return withdrawalStrategies.stream()
+                .filter(strategy -> strategy.supportsStrategyType(strategyType))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Unknown strategy type: " + strategyType));
     }
 }

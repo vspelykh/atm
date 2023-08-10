@@ -6,7 +6,6 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.Hibernate;
 
-import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Objects;
 
@@ -30,7 +29,7 @@ public class Withdrawal extends AbstractBaseEntity {
 
     @NotNull
     @Column(name = AMOUNT)
-    private BigDecimal amount;
+    private Integer amount;
 
     @NotNull
     @Column(name = TRANSACTION_DATE)

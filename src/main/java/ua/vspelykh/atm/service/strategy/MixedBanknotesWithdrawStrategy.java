@@ -68,6 +68,22 @@ public class MixedBanknotesWithdrawStrategy extends AbstractWithdrawStrategy {
     }
 
     /**
+     * Checks if this strategy supports the given strategy type.
+     *
+     * @param strategyType The strategy type to check.
+     * @return True if the strategy supports the given type, false otherwise.
+     */
+    @Override
+    public boolean supportsStrategyType(StrategyType strategyType) {
+        return strategyType == StrategyType.MIXED;
+    }
+
+    @Override
+    public StrategyType getStrategyType() {
+        return StrategyType.MIXED;
+    }
+
+    /**
      * Mocks the withdrawal of the specified amount using mixed banknotes and then rolls back the changes.
      *
      * @param amountToWithdraw   The amount to be withdrawn.

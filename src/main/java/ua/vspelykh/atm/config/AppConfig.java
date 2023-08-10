@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+//@ComponentScan
 public class AppConfig {
 
     public static final int ATM_ID = 1;
@@ -12,4 +13,6 @@ public class AppConfig {
     public AtmIdHolder atmIdHolder() {
         return new AtmIdHolder(ATM_ID);
     }
+
+
 }

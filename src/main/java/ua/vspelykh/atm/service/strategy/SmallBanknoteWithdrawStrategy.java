@@ -113,6 +113,22 @@ public class SmallBanknoteWithdrawStrategy extends AbstractWithdrawStrategy {
     }
 
     /**
+     * Checks if this strategy supports the given strategy type.
+     *
+     * @param strategyType The strategy type to check.
+     * @return True if the strategy supports the given type, false otherwise.
+     */
+    @Override
+    public boolean supportsStrategyType(StrategyType strategyType) {
+        return strategyType == StrategyType.SMALL;
+    }
+
+    @Override
+    public StrategyType getStrategyType() {
+        return StrategyType.SMALL;
+    }
+
+    /**
      * Private helper method to mock the withdrawal of the requested amount using available banknotes
      * and then rolls back the changes.
      *

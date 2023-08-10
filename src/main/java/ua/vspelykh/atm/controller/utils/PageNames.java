@@ -7,4 +7,6 @@ import lombok.NoArgsConstructor;
 public class PageNames {
 
     public static final String HOME = "index";
+    public static final String AMOUNT = "amount";
+    public static final String STRATEGIES = "strategies";
 }

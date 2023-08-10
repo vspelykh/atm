@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>SUCCESS! Take your cash!</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/js/scripts.js"></script>
+</head>
+<body>
+
+<div id="resultContainer">
+    <!-- Тут будуть відображені результати -->
+</div>
+<script th:inline="javascript">
+
+    var amount = /*[[${amount}]]*/ null;
+    var type = /*[[${type}]]*/ null;
+</script>
+
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            url: '/api/withdraw',
+            type: 'POST',
+            data: JSON.stringify({amount: amount, type: type}),
+            contentType: 'application/json',
+            success: function (data) {
+                console.log(amount);
+                // Обробка успішного результату (200 OK)
+                var resultContainer = $('#resultContainer'); // DOM-елемент для відображення результатів
+
+                resultContainer.empty(); // Очищення контейнера результатів
+
+                data.forEach(function (banknote) {
+                    var banknoteInfo = 'Banknote: ' + banknote.denomination + ' grn, quantity: ' + banknote.quantity;
+                    var banknoteElement = $('<div>').text(banknoteInfo);
+                    resultContainer.append(banknoteElement);
+                });
+
+                // Тут можна додати додатковий код або повідомлення про успішне зняття
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                if (xhr.status === 400) {
+                    var resultContainer = $('#resultContainer');
+                    resultContainer.empty(); // Очищення контейнера результатів
+                    resultContainer.append("Error");
+
+                    // Ваш код для відображення сторінки помилки або іншої логіки
+                } else {
+                    // Обробка інших помилок
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>

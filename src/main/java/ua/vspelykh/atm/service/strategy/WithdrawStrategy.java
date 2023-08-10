@@ -32,5 +32,19 @@ public interface WithdrawStrategy {
      * @return True if the withdrawal is possible, false otherwise.
      */
     boolean isWithdrawPossible(int amountToWithdraw, List<Banknote> availableBanknotes);
+
+    /**
+     * Checks if this strategy supports the given strategy type.
+     *
+     * @param strategyType The strategy type to check.
+     * @return True if the strategy supports the given type, false otherwise.
+     */
+    boolean supportsStrategyType(StrategyType strategyType);
+
+    /**
+     *
+     * @return strategyType of strategy
+     */
+    StrategyType getStrategyType();
 }
 

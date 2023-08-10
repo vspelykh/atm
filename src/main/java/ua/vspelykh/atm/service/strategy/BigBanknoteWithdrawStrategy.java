@@ -130,6 +130,22 @@ public class BigBanknoteWithdrawStrategy extends AbstractWithdrawStrategy {
     }
 
     /**
+     * Checks if this strategy supports the given strategy type.
+     *
+     * @param strategyType The strategy type to check.
+     * @return True if the strategy supports the given type, false otherwise.
+     */
+    @Override
+    public boolean supportsStrategyType(StrategyType strategyType) {
+        return strategyType == StrategyType.BIG;
+    }
+
+    @Override
+    public StrategyType getStrategyType() {
+        return StrategyType.BIG;
+    }
+
+    /**
      * Provides a string representation of the class.
      *
      * @return The class name as a string.
