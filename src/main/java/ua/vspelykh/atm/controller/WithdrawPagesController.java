@@ -1,58 +1,51 @@
 package ua.vspelykh.atm.controller;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import ua.vspelykh.atm.model.dto.BanknoteDTO;
+import ua.vspelykh.atm.controller.utils.AttributeNames;
 import ua.vspelykh.atm.service.strategy.StrategyType;
 
-import java.util.List;
-
-import static ua.vspelykh.atm.controller.utils.PageNames.AMOUNT;
-import static ua.vspelykh.atm.controller.utils.PageNames.STRATEGIES;
+import static ua.vspelykh.atm.controller.utils.AttributeNames.TYPE;
+import static ua.vspelykh.atm.controller.utils.PageNames.*;
+import static ua.vspelykh.atm.controller.utils.PageUrls.*;
 
 @Controller
-@RequestMapping("/withdraw")
+@RequestMapping(WITHDRAW_URL)
 public class WithdrawPagesController {
 
-    @GetMapping("/amount")
+    @GetMapping(AMOUNT_URL)
     public String index() {
         return AMOUNT;
     }
 
-    @PostMapping("/strategies")
+    @PostMapping(STRATEGIES_URL)
     public String chooseStrategy(@RequestParam Integer amount, Model model) {
-        model.addAttribute("amount", amount);
+        model.addAttribute(AttributeNames.AMOUNT, amount);
         return STRATEGIES;
     }
 
-    @PostMapping("/process")
-    public String withdrawProcess(@ModelAttribute("amount") Integer amount,
-                                  @ModelAttribute("type") StrategyType type,
+    @PostMapping(PROCESS_URL)
+    public String withdrawProcess(@ModelAttribute(AttributeNames.AMOUNT) Integer amount,
+                                  @ModelAttribute(TYPE) StrategyType type,
                                   RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute("amount", amount);
-        redirectAttributes.addFlashAttribute("type", type);
-        return "redirect:/withdraw/result"; // Перенаправлення на GET-метод
+        redirectAttributes.addFlashAttribute(AttributeNames.AMOUNT, amount);
+        redirectAttributes.addFlashAttribute(TYPE, type);
+        return REDIRECT_TO_WITHDRAWAL_RESULT;
     }
 
-    @GetMapping("/result")
-    public String showSuccessPage(@ModelAttribute("amount") Integer amount,
-                                  @ModelAttribute("type") StrategyType type,
+    @GetMapping(RESULT_URL)
+    public String showSuccessPage(@ModelAttribute(AttributeNames.AMOUNT) Integer amount,
+                                  @ModelAttribute(TYPE) StrategyType type,
                                   Model model) {
         if (amount == null || type == null) {
-            // Обробка ситуації, коли дані не були передані через POST-запит
-            return "redirect:/"; // Повернення на початкову сторінку або іншу за вашим вибором
+            return REDIRECT_HOME;
         }
 
-        model.addAttribute("amount", amount);
-        model.addAttribute("type", type);
+        model.addAttribute(AttributeNames.AMOUNT, amount);
+        model.addAttribute(TYPE, type);
 
-        return "withdraw-result"; // Показ сторінки з результатами
+        return WITHDRAWAL_RESULT;
     }
-
 }
