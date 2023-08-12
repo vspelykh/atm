@@ -42,25 +42,22 @@ $(document).ready(function() {
     });
 });
 
-//
-// $(document).ready(function () {
-//     $.ajax({
-//         url: "/api/atms",
-//         type: "GET",
-//         dataType: "json",
-//         success: function (data) {
-//             var tableBody = $("#usersTableBody");
-//             tableBody.empty(); // Очищаємо таблицю перед заповненням новими даними
-//
-//             // Додаємо рядки з даними в таблицю
-//             for (var i = 0; i < data.length; i++) {
-//                 var user = data[i];
-//                 var row = "<tr><td>" + user.availability + "</td><td>" + user.location + "</td></tr>";
-//                 tableBody.append(row);
-//             }
-//         },
-//         error: function (error) {
-//             console.log(error);
-//         }
-//     });
-// });
+$(document).ready(function() {
+    $.ajax({
+        url: '/api/balance',
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json'
+        },
+        success: function(data) {
+            // Отримання контейнера для балансу
+            var balanceContainer = $('#balanceContainer');
+
+            // Зміна розміру шрифту втричі більшим
+            balanceContainer.text('Balance: ' + data.toFixed(2)).css('font-size', '300%');
+        },
+        error: function(xhr, status, error) {
+            console.error('Error fetching balance:', error);
+        }
+    });
+});

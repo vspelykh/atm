@@ -4,6 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Data class representing a Transaction request.
+ *
+ * @version 1.0
+ */
 @Getter
 @Setter
 @AllArgsConstructor

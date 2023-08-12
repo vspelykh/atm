@@ -3,7 +3,7 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>SUCCESS! Transfer was committed!</title>
+    <title>Transfer result</title>
     <link rel="stylesheet" href="/css/styles.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="/js/scripts.js"></script>
@@ -24,28 +24,26 @@
         $.ajax({
             url: '/api/transfer',
             type: 'POST',
-            data: JSON.stringify({accountTo: accountTo, amount: amount}),
+            data: JSON.stringify({ accountTo: accountTo, amount: amount }),
             contentType: 'application/json',
-            success: function (data) {
+            success: function (response) {
                 console.log(amount);
                 var resultContainer = $('#resultContainer');
 
                 resultContainer.empty();
 
-                data.forEach(function (banknote) {
-
-                    // var banknoteInfo = 'Banknote: ' + banknote.denomination + ' grn, quantity: ' + banknote.quantity;
-                    // var banknoteElement = $('<div>').text(banknoteInfo);
-                    resultContainer.append('SUCCESS!');
-                });
+                var transferInfo = 'Transfer: ' + response.amount + ' grn, to: ' + response.destinationAccount.accountNumber;
+                var transferElem = $('<div>').text(transferInfo);
+                resultContainer.append(transferElem);
             },
             error: function (xhr, textStatus, errorThrown) {
-                if (xhr.status === 400) {
-                    var resultContainer = $('#resultContainer');
-                    resultContainer.empty();
-                    resultContainer.append("Error");
+                var resultContainer = $('#resultContainer');
+                resultContainer.empty();
 
+                if (xhr.status === 400) {
+                    resultContainer.append("Error");
                 } else {
+                    // Обробка інших помилок
                 }
             }
         });

@@ -24,5 +24,6 @@ public class PageNames {
 
     public static final String CLIENT_ACCOUNTS = "my-accounts";
     public static final String TRANSFER =  "transfer";
+    public static final String BALANCE = "balance";
 
 }
