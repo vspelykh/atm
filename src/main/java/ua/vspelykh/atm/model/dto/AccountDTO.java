@@ -3,7 +3,6 @@ package ua.vspelykh.atm.model.dto;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @EqualsAndHashCode(callSuper = true)
@@ -15,7 +14,7 @@ import java.time.LocalDate;
 @SuperBuilder
 public class AccountDTO extends AbstractDTO {
     private String accountNumber;
-    private BigDecimal balance;
+    private Integer balance;
     private Integer userId;
     private String password;
     private LocalDate issueDate;

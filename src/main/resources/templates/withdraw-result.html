@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>SUCCESS! Take your cash!</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/js/scripts.js"></script>
+</head>
+<body>
+
+<div id="resultContainer">
+
+</div>
+<script th:inline="javascript">
+
+    var amount = /*[[${amount}]]*/ null;
+    var type = /*[[${type}]]*/ null;
+</script>
+
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            url: '/api/withdraw',
+            type: 'POST',
+            data: JSON.stringify({amount: amount, type: type}),
+            contentType: 'application/json',
+            success: function (data) {
+                console.log(amount);
+                var resultContainer = $('#resultContainer');
+
+                resultContainer.empty();
+
+                data.forEach(function (banknote) {
+                    var banknoteInfo = 'Banknote: ' + banknote.denomination + ' grn, quantity: ' + banknote.quantity;
+                    var banknoteElement = $('<div>').text(banknoteInfo);
+                    resultContainer.append(banknoteElement);
+                });
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                if (xhr.status === 400) {
+                    var resultContainer = $('#resultContainer');
+                    resultContainer.empty();
+                    resultContainer.append("Error");
+
+                } else {
+                }
+            }
+        });
+    });
+</script>
+<br>
+<div class="button-row">
+    <button class="button" sec:authorize="isAuthenticated()">
+        <a th:href="@{/logout}">Put off card</a>
+    </button>
+    <button class="button" sec:authorize="isAuthenticated()">
+        <a th:href="@{/}">Main menu</a>
+    </button>
+</div>
+</body>
+</html>

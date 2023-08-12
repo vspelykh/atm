@@ -1,36 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Симулятор ATM</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto&display=swap">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <script src="/js/scripts.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $.ajax({
-                url: "/api/atms",
-                type: "GET",
-                dataType: "json",
-                success: function(data) {
-                    var tableBody = $("#usersTableBody");
-                    tableBody.empty(); // Очищаємо таблицю перед заповненням новими даними
 
-                    // Додаємо рядки з даними в таблицю
-                    for (var i = 0; i < data.length; i++) {
-                        var user = data[i];
-                        var row = "<tr><td>" + user.availability + "</td><td>" + user.location + "</td></tr>";
-                        tableBody.append(row);
-                    }
-                },
-                error: function(error) {
-                    console.log(error);
-                }
-            });
-        });
-    </script>
 </head>
 
 <body>
@@ -40,28 +19,56 @@
     <hr>
 </header>
 
-<!-- Три ряди кнопок -->
+<br>
 <main>
-    <div class="button-row">
-        <!-- Код таблиці та результату AJAX запиту до REST контроллера тут -->
-        <h1>Список користувачів</h1>
-        <table>
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Ім'я</th>
-            </tr>
-            </thead>
-            <tbody id="usersTableBody">
-            <!-- Рядки з даними будуть додаватись сюди -->
-            </tbody>
-        </table>
+    <div class="button-container">
+        <div class="button-row">
+            <button class="button" sec:authorize="isAuthenticated()">
+                <a th:href="@{/logout}">Put off card</a>
+            </button>
+            <button class="button" sec:authorize="isAnonymous()">
+                <a th:href="@{/login}">Insert card</a>
+            </button>
+        </div>
+        <div class="button-row">
+            <button class="button">Transfer to me</button>
+        </div>
+        <div class="button-row">
+            <button class="button">Balance</button>
+        </div>
+    </div>
+    <div class="button-container">
+        <button class="button" onclick="window.location.href='/withdraw/amount'">Withdraw money</button>
+
+        <div class="button-row">
+            <button class="button">Transfer to friend</button>
+        </div>
+        <div class="button-row">
+            <button class="button">Admin</button>
+        </div>
     </div>
 </main>
 
+<!--    <div class="button-row">-->
+<!--        &lt;!&ndash; Код таблиці та результату AJAX запиту до REST контроллера тут &ndash;&gt;-->
+<!--        <h1>Список користувачів</h1>-->
+<!--        <table>-->
+<!--            <thead>-->
+<!--            <tr>-->
+<!--                <th>ID</th>-->
+<!--                <th>Ім'я</th>-->
+<!--            </tr>-->
+<!--            </thead>-->
+<!--&lt;!&ndash;            <tbody id="usersTableBody">&ndash;&gt;-->
+<!--&lt;!&ndash;            &lt;!&ndash; Рядки з даними будуть додаватись сюди &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;            </tbody>&ndash;&gt;-->
+<!--        </table>-->
+<!--    </div>-->
+<br>
+
 <!-- Футер -->
 <footer>
-    <p>© 2023 Ваша компанія. Усі права захищені.</p>
+    <p>© 2023 vspelykh. All rights reserved.</p>
 </footer>
 </body>
 

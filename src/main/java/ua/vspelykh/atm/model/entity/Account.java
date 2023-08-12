@@ -8,7 +8,6 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.Hibernate;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -37,7 +36,7 @@ public class Account extends AbstractBaseEntity {
 
     @NotNull
     @Column(name = BALANCE)
-    private BigDecimal balance;
+    private Integer balance;
 
     @NotNull
     @Column(name = USER_ID, insertable = false, updatable = false)

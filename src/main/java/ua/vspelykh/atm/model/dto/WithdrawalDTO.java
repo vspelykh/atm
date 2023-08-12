@@ -3,7 +3,6 @@ package ua.vspelykh.atm.model.dto;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 @EqualsAndHashCode(callSuper = true)
@@ -14,7 +13,7 @@ import java.sql.Timestamp;
 @ToString
 @SuperBuilder
 public class WithdrawalDTO extends AbstractDTO {
-    private BigDecimal amount;
+    private Integer amount;
     private Timestamp transactionDate;
     private AccountDTO account;
     private ATMDTO atm;

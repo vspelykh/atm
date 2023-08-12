@@ -16,13 +16,18 @@ import static ua.vspelykh.atm.model.util.Tables.BANKNOTES;
 @Table(name = BANKNOTES)
 @Getter
 @Setter
-@ToString(onlyExplicitlyIncluded = true)
+//@ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 @SuperBuilder
 public class Banknote extends AbstractBaseEntity {
     private int atmId;
     private int denomination;
     private int quantity;
 
+    @Override
+    public String toString() {
+        return denomination + " * " + quantity;
+    }
 }
