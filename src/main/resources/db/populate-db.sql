@@ -4,9 +4,10 @@ VALUES ('John', 'Doe', '+1 123-456-7890', 'user'),
        ('Bob', 'Johnson', '+1 555-123-4567', 'user');
 
 INSERT INTO accounts (account_number, balance, user_id, password, issue_date)
-VALUES ('1234567890123456', 5000.00, 1, '$2a$12$2Wsb3oNJfwe6N5Wz/FuzXOmXq2uowEmVenpEszVbNTNkJaSP1bMg6', '2023-07-23'),
-       ('9876543210987654', 3000.00, 2, '$2a$12$2Wsb3oNJfwe6N5Wz/FuzXOmXq2uowEmVenpEszVbNTNkJaSP1bMg6', '2023-07-23'),
-       ('1111222233334444', 10000.00, 3, '$2a$12$2Wsb3oNJfwe6N5Wz/FuzXOmXq2uowEmVenpEszVbNTNkJaSP1bMg6', '2023-07-23');
+VALUES ('1234567890123456', 5000.00, 1, '$2a$12$2Wsb3oNJfwe6N5Wz/FuzXOmXq2uowEmVenpEszVbNTNkJaSP1bMg6', '2024-07-23'),
+       ('4321567890123456', 5000.00, 1, '$2a$12$2Wsb3oNJfwe6N5Wz/FuzXOmXq2uowEmVenpEszVbNTNkJaSP1bMg6', '2024-07-23'),
+       ('9876543210987654', 3000.00, 2, '$2a$12$2Wsb3oNJfwe6N5Wz/FuzXOmXq2uowEmVenpEszVbNTNkJaSP1bMg6', '2024-07-23'),
+       ('1111222233334444', 10000.00, 3, '$2a$12$2Wsb3oNJfwe6N5Wz/FuzXOmXq2uowEmVenpEszVbNTNkJaSP1bMg6', '2024-07-23');
 
 INSERT INTO authorities (account_number, authority)
 values ('1234567890123456', 'ROLE_CLIENT'),

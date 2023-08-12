@@ -5,6 +5,9 @@ import org.springframework.stereotype.Component;
 import ua.vspelykh.atm.model.dto.AccountDTO;
 import ua.vspelykh.atm.model.entity.Account;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
 @RequiredArgsConstructor
 public class AccountConverter {
@@ -23,6 +26,17 @@ public class AccountConverter {
                 .build();
     }
 
+    public List<AccountDTO> listToDto(List<Account> accounts, String currentAccount){
+        List<AccountDTO> accountDTOS = new ArrayList<>();
+        for (Account account : accounts){
+            if (account.getAccountNumber().equals(currentAccount)){
+                continue;
+            }
+            accountDTOS.add(toDto(account));
+        }
+        return accountDTOS;
+    }
+
     public Account toEntity(AccountDTO accountDTO) {
         return Account.builder()
                 .accountNumber(accountDTO.getAccountNumber())
@@ -33,5 +47,6 @@ public class AccountConverter {
                 .user(userConverter.toEntity(accountDTO.getUser()))
                 .build();
     }
+
 }
 

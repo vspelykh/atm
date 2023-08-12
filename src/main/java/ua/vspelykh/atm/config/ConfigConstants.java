@@ -14,7 +14,7 @@ import static ua.vspelykh.atm.controller.utils.PageUrls.*;
 public class ConfigConstants {
 
     static final String[] PERMIT_ALL_URLS = {HOME_URL, "/js/**", "/css/**", "/img/**"};
-    static final String[] AUTHENTICATED_URLS = {ALL_WITHDRAW_URLS, ALL_API, LOGOUT_URL};
+    static final String[] AUTHENTICATED_URLS = {ALL_WITHDRAW_URLS, ALL_TRANSFER_PAGES, ALL_API, LOGOUT_URL};
     static final String[] ANONYMOUS_URLS = {LOGIN_URL};
 
     static final String SQL_LOG_ACCOUNT = "SELECT account_number, password, 1 as enabled " +

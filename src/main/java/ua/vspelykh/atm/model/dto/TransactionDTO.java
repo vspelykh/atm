@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @ToString
 @SuperBuilder
 public class TransactionDTO extends AbstractDTO {
-    private BigDecimal amount;
+    private Double amount;
     private LocalDateTime transactionDate;
     private AccountDTO sourceAccount;
     private AccountDTO destinationAccount;

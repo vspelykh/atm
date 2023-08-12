@@ -30,7 +30,7 @@ public class Transaction extends AbstractBaseEntity {
 
     @NotNull
     @Column(name = AMOUNT)
-    private BigDecimal amount;
+    private Double amount;
 
     @NotNull
     @Column(name = TRANSACTION_DATE)

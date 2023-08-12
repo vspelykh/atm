@@ -18,6 +18,30 @@ $(document).ready(function() {
         }
     });
 });
+
+$(document).ready(function() {
+    $.ajax({
+        url: '/api/accounts',
+        type: 'GET',
+        success: function(data) {
+            var accountsHtml = "";
+            accountsHtml += '<form action="/transfer/process" method="post">'
+            accountsHtml += ' <label for="accountTo">Choose account:</label>\n' +
+                '    <select id="accountTo" name="accountTo">'
+            data.forEach(function(account) {
+                accountsHtml += '<option value="' + account + '">' + account + '</option>';
+            });
+            accountsHtml += '</select>'
+            accountsHtml += '<label for="amount">Enter the amount:</label>\n' +
+                '    <input type="number" id="amount" name="amount" step="0.01" required>\n' +
+                '\n' +
+                '    <button type="submit">Perform</button>\n' +
+                '</form>'
+            $('#accountsContainer').html(accountsHtml);
+        }
+    });
+});
+
 //
 // $(document).ready(function () {
 //     $.ajax({
