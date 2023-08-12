@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>SUCCESS! Take your cash!</title>
@@ -10,7 +11,7 @@
 <body>
 
 <div id="resultContainer">
-    <!-- Тут будуть відображені результати -->
+
 </div>
 <script th:inline="javascript">
 
@@ -27,32 +28,36 @@
             contentType: 'application/json',
             success: function (data) {
                 console.log(amount);
-                // Обробка успішного результату (200 OK)
-                var resultContainer = $('#resultContainer'); // DOM-елемент для відображення результатів
+                var resultContainer = $('#resultContainer');
 
-                resultContainer.empty(); // Очищення контейнера результатів
+                resultContainer.empty();
 
                 data.forEach(function (banknote) {
                     var banknoteInfo = 'Banknote: ' + banknote.denomination + ' grn, quantity: ' + banknote.quantity;
                     var banknoteElement = $('<div>').text(banknoteInfo);
                     resultContainer.append(banknoteElement);
                 });
-
-                // Тут можна додати додатковий код або повідомлення про успішне зняття
             },
             error: function (xhr, textStatus, errorThrown) {
                 if (xhr.status === 400) {
                     var resultContainer = $('#resultContainer');
-                    resultContainer.empty(); // Очищення контейнера результатів
+                    resultContainer.empty();
                     resultContainer.append("Error");
 
-                    // Ваш код для відображення сторінки помилки або іншої логіки
                 } else {
-                    // Обробка інших помилок
                 }
             }
         });
     });
 </script>
+<br>
+<div class="button-row">
+    <button class="button" sec:authorize="isAuthenticated()">
+        <a th:href="@{/logout}">Put off card</a>
+    </button>
+    <button class="button" sec:authorize="isAuthenticated()">
+        <a th:href="@{/}">Main menu</a>
+    </button>
+</div>
 </body>
 </html>

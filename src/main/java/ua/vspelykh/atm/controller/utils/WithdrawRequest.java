@@ -5,6 +5,11 @@ import lombok.Getter;
 import lombok.Setter;
 import ua.vspelykh.atm.service.strategy.StrategyType;
 
+/**
+ * Data class representing a withdrawal request.
+ *
+ * @version 1.0
+ */
 @Getter
 @Setter
 @AllArgsConstructor

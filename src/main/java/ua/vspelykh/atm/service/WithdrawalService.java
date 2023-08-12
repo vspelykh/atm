@@ -5,8 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.vspelykh.atm.config.AtmIdHolder;
-import ua.vspelykh.atm.model.converter.AccountConverter;
-import ua.vspelykh.atm.model.converter.WithdrawalConverter;
 import ua.vspelykh.atm.model.dto.BanknoteDTO;
 import ua.vspelykh.atm.model.entity.Account;
 import ua.vspelykh.atm.model.entity.Banknote;
@@ -34,9 +32,6 @@ public class WithdrawalService {
     private final AccountRepository accountRepository;
     private final ATMRepository atmRepository;
 
-    private final WithdrawalConverter withdrawalConverter;
-    private final AccountConverter accountConverter;
-
     private final StrategyChecker strategyChecker;
 
     private final AtmIdHolder atmIdHolder;
@@ -46,10 +41,10 @@ public class WithdrawalService {
     }
 
     @Transactional
-    public List<BanknoteDTO> performWithdrawal(int amount, StrategyType strategyType) throws NoAvailableWithdrawStrategiesException {
+    public List<BanknoteDTO> performWithdrawal(int amount, StrategyType strategyType, String accountNumber) throws NoAvailableWithdrawStrategiesException {
         WithdrawStrategy strategy = strategyChecker.getStrategy(strategyType);
         List<Banknote> availableBanknotes = banknoteRepository.findAllByAtmId(atmIdHolder.getAtmId());
-        Account account = accountRepository.getReferenceById(1);
+        Account account = accountRepository.findByAccountNumber(accountNumber);
         if (strategy.isWithdrawPossible(amount, availableBanknotes) && hasEnoughMoney(account, amount)) {
             Withdrawal withdrawal = createWithdrawal(amount, account);
             withdrawalRepository.save(withdrawal);

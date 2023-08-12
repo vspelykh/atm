@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="UTF-8">
@@ -23,10 +23,10 @@
 <main>
     <div class="button-container">
         <div class="button-row">
-            <button class="button" th:if="${not #strings.isEmpty(principal)}">
+            <button class="button" sec:authorize="isAuthenticated()">
                 <a th:href="@{/logout}">Put off card</a>
             </button>
-            <button class="button" th:unless="${not #strings.isEmpty(principal)}">
+            <button class="button" sec:authorize="isAnonymous()">
                 <a th:href="@{/login}">Insert card</a>
             </button>
         </div>

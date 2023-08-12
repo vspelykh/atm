@@ -1,39 +1,28 @@
 package ua.vspelykh.atm.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import ua.vspelykh.atm.model.converter.AccountConverter;
-import ua.vspelykh.atm.model.dto.AccountDTO;
-import ua.vspelykh.atm.service.AccountService;
 
-import java.security.Principal;
+import static ua.vspelykh.atm.controller.utils.PageNames.LOGIN;
+import static ua.vspelykh.atm.controller.utils.PageUrls.LOGIN_URL;
 
-import static ua.vspelykh.atm.controller.utils.PageUrls.HOME_URL;
-
+/**
+ * Controller class responsible for handling authentication-related requests.
+ *
+ * @version 1.0
+ */
 @Controller
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final AccountService accountService;
-    private final AccountConverter accountConverter;
-
-    @GetMapping("/login")
+    /**
+     * Handles a GET request to the login page.
+     *
+     * @return The name of the login view to display.
+     */
+    @GetMapping(LOGIN_URL)
     public String login() {
-        return "login";
+        return LOGIN;
     }
-
-    @GetMapping("/login-success")
-    public String loginSuccess() {
-
-        return HOME_URL;
-    }
-
-//    @GetMapping("/logout")
-//    public String logout(Principal principal) {
-//
-//    }
 }
