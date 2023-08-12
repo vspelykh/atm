@@ -3,12 +3,12 @@ package ua.vspelykh.atm.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import ua.vspelykh.atm.config.AtmIdHolder;
 import ua.vspelykh.atm.model.converter.AccountConverter;
 import ua.vspelykh.atm.model.converter.WithdrawalConverter;
 import ua.vspelykh.atm.model.dto.BanknoteDTO;
+import ua.vspelykh.atm.model.entity.Account;
 import ua.vspelykh.atm.model.entity.Banknote;
 import ua.vspelykh.atm.model.entity.Withdrawal;
 import ua.vspelykh.atm.model.repository.ATMRepository;
@@ -49,16 +49,22 @@ public class WithdrawalService {
     public List<BanknoteDTO> performWithdrawal(int amount, StrategyType strategyType) throws NoAvailableWithdrawStrategiesException {
         WithdrawStrategy strategy = strategyChecker.getStrategy(strategyType);
         List<Banknote> availableBanknotes = banknoteRepository.findAllByAtmId(atmIdHolder.getAtmId());
-        if (strategy.isWithdrawPossible(amount, availableBanknotes)) {
-            Withdrawal withdrawal = createWithdrawal(amount);
+        Account account = accountRepository.getReferenceById(1);
+        if (strategy.isWithdrawPossible(amount, availableBanknotes) && hasEnoughMoney(account, amount)) {
+            Withdrawal withdrawal = createWithdrawal(amount, account);
             withdrawalRepository.save(withdrawal);
+            account.setBalance(account.getBalance() - amount);
             return strategy.withdraw(amount, availableBanknotes);
         } else throw new NoAvailableWithdrawStrategiesException();
     }
 
-    private Withdrawal createWithdrawal(int amount) {
+    private boolean hasEnoughMoney(Account account, int amount) {
+        return accountRepository.existsByAccountNumberAndBalanceGreaterThanEqual(account.getAccountNumber(), amount);
+    }
+
+    private Withdrawal createWithdrawal(int amount, Account account) {
         return Withdrawal.builder().atm(atmRepository.getReferenceById(atmIdHolder.getAtmId()))
-                .account(accountRepository.getReferenceById(1))
+                .account(account)
                 .amount(amount)
                 .transactionDate(Timestamp.valueOf(LocalDateTime.now()))
                 .build();

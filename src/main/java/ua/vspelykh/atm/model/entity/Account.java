@@ -37,7 +37,7 @@ public class Account extends AbstractBaseEntity {
 
     @NotNull
     @Column(name = BALANCE)
-    private BigDecimal balance;
+    private Integer balance;
 
     @NotNull
     @Column(name = USER_ID, insertable = false, updatable = false)

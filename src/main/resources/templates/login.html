@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/styles.css">
+    <title>Insert the card</title>
+</head>
+<body>
+<main>
+    <form th:action="@{/login}" method="post">
+        <div class="button-container">
+            <h2>Welcome to the ATM Simulator</h2>
+
+            <div th:if="${param.error}">
+                Invalid username and password.</div>
+            <div th:if="${param.logout}">
+                You have been logged out.</div>
+            <div>
+                <input type="text" name="username" placeholder="Username"/>
+            </div>
+            <div>
+                <input type="password" name="password" placeholder="Password"/>
+            </div>
+            <input type="submit" value="Log in" />
+        </div>
+
+
+<!--            <div class="button-row">-->
+<!--                <label for="account_number">Card Number:</label>-->
+<!--                <input type="text" id="account_number" placeholder="Enter your card number">-->
+<!--            </div>-->
+<!--            <div class="button-row">-->
+<!--                <label for="password">PIN Code:</label>-->
+<!--                <input type="password" id="password" placeholder="Enter your PIN code">-->
+<!--            </div>-->
+<!--            <button class="button" type="submit">Submit</button>-->
+<!--        </div>-->
+    </form>
+</main>
+</body>
+</html>
+>

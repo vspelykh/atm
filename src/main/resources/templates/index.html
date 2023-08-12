@@ -23,7 +23,12 @@
 <main>
     <div class="button-container">
         <div class="button-row">
-            <button class="button">Insert card</button>
+            <button class="button" th:if="${not #strings.isEmpty(principal)}">
+                <a th:href="@{/logout}">Put off card</a>
+            </button>
+            <button class="button" th:unless="${not #strings.isEmpty(principal)}">
+                <a th:href="@{/login}">Insert card</a>
+            </button>
         </div>
         <div class="button-row">
             <button class="button">Transfer to me</button>

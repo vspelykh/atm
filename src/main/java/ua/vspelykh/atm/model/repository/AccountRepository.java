@@ -10,4 +10,8 @@ import java.util.List;
 public interface AccountRepository extends JpaRepository<Account, Integer> {
 
     List<Account> getAllByUserId(Integer userId);
+
+    Account findByAccountNumber(String accountNumber);
+
+    boolean existsByAccountNumberAndBalanceGreaterThanEqual(String accountId, Integer amount);
 }

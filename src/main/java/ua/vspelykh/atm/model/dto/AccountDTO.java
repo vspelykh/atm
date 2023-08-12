@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @SuperBuilder
 public class AccountDTO extends AbstractDTO {
     private String accountNumber;
-    private BigDecimal balance;
+    private Integer balance;
     private Integer userId;
     private String password;
     private LocalDate issueDate;

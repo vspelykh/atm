@@ -4,9 +4,13 @@ VALUES ('John', 'Doe', '+1 123-456-7890', 'user'),
        ('Bob', 'Johnson', '+1 555-123-4567', 'user');
 
 INSERT INTO accounts (account_number, balance, user_id, password, issue_date)
-VALUES ('1234567890123456', 5000.00, 1, 'pass123', '2023-07-23'),
+VALUES ('1234567890123456', 5000.00, 1, '$2a$12$2Wsb3oNJfwe6N5Wz/FuzXOmXq2uowEmVenpEszVbNTNkJaSP1bMg6', '2023-07-23'),
        ('9876543210987654', 3000.00, 2, 'pass456', '2023-07-23'),
        ('1111222233334444', 10000.00, 3, 'pass789', '2023-07-23');
+
+INSERT INTO authorities (account_number, authority)
+values ('1234567890123456', 'ROLE_CLIENT'),
+       ('9876543210987654', 'ROLE_CLIENT');
 
 INSERT INTO transactions (amount, transaction_date, source_account_id, destination_account_id)
 VALUES (1000.00, '2023-07-23 10:30:00', 1, 2),
