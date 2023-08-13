@@ -112,7 +112,7 @@ public class WithdrawalService {
     }
 
     /**
-     * Methdod returns List of available denominations of banknotes in the current ATM.
+     * Method returns List of available denominations of banknotes in the current ATM.
      *
      * @param atmId id of current ATM.
      * @return List of available denominations of banknotes in the current ATM.

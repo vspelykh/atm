@@ -40,7 +40,7 @@ public class TransactionService {
      */
     public List<String> getAccountsOfCurrentUser(Principal principal) {
         String currentAccount = principal.getName();
-        Integer userId = accountRepository.findByAccountNumber(currentAccount).getUserId();
+        Integer userId = accountRepository.findByAccountNumber(currentAccount).getUser().getId();
 
         List<Account> accounts = accountRepository.findAllByUserId(userId);
         return accounts.stream().map(Account::getAccountNumber)
@@ -85,7 +85,7 @@ public class TransactionService {
      * @return The calculated transfer fee.
      */
     private double getTransferFee(Double amount, Account from, Account to) {
-        return !from.getUserId().equals(to.getUserId()) ? amount * 0.01 : 0;
+        return !from.getUser().getId().equals(to.getUser().getId()) ? amount * 0.01 : 0;
     }
 
     /**

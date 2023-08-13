@@ -33,7 +33,7 @@ public class StrategyTestData {
     static Banknote B50_LOW = new Banknote(1, 50, 4);
 
 
-    static List<Banknote> fullBanknotes(){
+    public static List<Banknote> fullBanknotes(){
         Banknote B10_FULL = new Banknote(1, 10, 10);
         Banknote B20_FULL = new Banknote(1, 20, 10);
         Banknote B50_FULL = new Banknote(1, 50, 10);
