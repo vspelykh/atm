@@ -3,10 +3,10 @@ package ua.vspelykh.atm.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ua.vspelykh.atm.model.converter.TransactionConverter;
 import ua.vspelykh.atm.model.dto.TransactionDTO;
 import ua.vspelykh.atm.model.entity.Account;
 import ua.vspelykh.atm.model.entity.Transaction;
+import ua.vspelykh.atm.model.mapper.TransactionMapper;
 import ua.vspelykh.atm.model.repository.AccountRepository;
 import ua.vspelykh.atm.model.repository.TransactionRepository;
 import ua.vspelykh.atm.util.exception.ServiceException;
@@ -30,7 +30,7 @@ public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final AccountRepository accountRepository;
 
-    private final TransactionConverter transactionConverter;
+    private final TransactionMapper transactionMapper;
 
     /**
      * Retrieves a list of account numbers associated with the current user.
@@ -65,7 +65,7 @@ public class TransactionService {
         double fee = getTransferFee(amount, from, to);
         Transaction transaction = verifyAndCreateTransaction(amount, fee, from, to);
         transactionRepository.save(transaction);
-        return transactionConverter.toDto(transaction);
+        return transactionMapper.toDTO(transaction);
     }
 
     private Account getAccountTo(String accountTo) throws ServiceException {

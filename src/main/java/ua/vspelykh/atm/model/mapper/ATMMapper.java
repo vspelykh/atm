@@ -2,16 +2,14 @@ package ua.vspelykh.atm.model.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 import ua.vspelykh.atm.model.dto.ATMDTO;
 import ua.vspelykh.atm.model.entity.ATM;
 
+import static ua.vspelykh.atm.model.mapper.BaseMapperConfig.SPRING;
 import static ua.vspelykh.atm.model.util.Columns.*;
 
-@Mapper
+@Mapper(componentModel = SPRING,uses = BaseMapperConfig.class)
 public interface ATMMapper {
-
-    ATMMapper INSTANCE = Mappers.getMapper(ATMMapper.class);
 
     @Mapping(source = ID, target = ID)
     @Mapping(source = LOCATION, target = LOCATION)
