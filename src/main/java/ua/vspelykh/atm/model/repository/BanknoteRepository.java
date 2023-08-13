@@ -21,4 +21,12 @@ public interface BanknoteRepository extends JpaRepository<Banknote, Integer> {
      * @return A list of banknotes available in the specified ATM.
      */
     List<Banknote> findAllByAtmId(Integer atmId);
+
+    /**
+     * Retrieves a list of banknotes available in a specific ATM and quantity greater than needed.
+     *
+     * @param atmId The ID of the ATM.
+     * @return A list of banknotes available in the specified ATM.
+     */
+    List<Banknote> findAllByAtmIdAndQuantityGreaterThanOrderByDenomination(Integer atmId, Integer minQuantity);
 }

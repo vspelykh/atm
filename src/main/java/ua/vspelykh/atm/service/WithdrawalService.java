@@ -110,4 +110,15 @@ public class WithdrawalService {
                 .transactionDate(Timestamp.valueOf(LocalDateTime.now()))
                 .build();
     }
+
+    /**
+     * Methdod returns List of available denominations of banknotes in the current ATM.
+     *
+     * @param atmId id of current ATM.
+     * @return List of available denominations of banknotes in the current ATM.
+     */
+    public List<Integer> getAvailableDenominations(int atmId) {
+        List<Banknote> availableBanknotes = banknoteRepository.findAllByAtmIdAndQuantityGreaterThanOrderByDenomination(atmId, 0);
+        return availableBanknotes.stream().map(Banknote::getDenomination).toList();
+    }
 }
