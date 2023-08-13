@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/styles.css">
@@ -10,6 +10,14 @@
 <body>
 <main>
     <div id="balanceContainer"></div>
+<div class="button-row">
+    <button class="button" sec:authorize="isAuthenticated()">
+        <a th:href="@{/logout}">Put off card</a>
+    </button>
+    <button class="button" sec:authorize="isAuthenticated()">
+        <a th:href="@{/}">Main menu</a>
+    </button>
+</div>
 </main>
 </body>
 </html>

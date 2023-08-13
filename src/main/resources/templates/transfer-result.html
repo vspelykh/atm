@@ -10,7 +10,7 @@
 </head>
 <body>
 
-<div id="resultContainer">
+<div id="transferResultContainer">
 
 </div>
 <script th:inline="javascript">
@@ -19,36 +19,6 @@
     var accountTo = /*[[${accountTo}]]*/ null;
 </script>
 
-<script>
-    $(document).ready(function () {
-        $.ajax({
-            url: '/api/transfer',
-            type: 'POST',
-            data: JSON.stringify({ accountTo: accountTo, amount: amount }),
-            contentType: 'application/json',
-            success: function (response) {
-                console.log(amount);
-                var resultContainer = $('#resultContainer');
-
-                resultContainer.empty();
-
-                var transferInfo = 'Transfer: ' + response.amount + ' grn, to: ' + response.destinationAccount.accountNumber;
-                var transferElem = $('<div>').text(transferInfo);
-                resultContainer.append(transferElem);
-            },
-            error: function (xhr, textStatus, errorThrown) {
-                var resultContainer = $('#resultContainer');
-                resultContainer.empty();
-
-                if (xhr.status === 400) {
-                    resultContainer.append("Error");
-                } else {
-                    // Обробка інших помилок
-                }
-            }
-        });
-    });
-</script>
 <br>
 <div class="button-row">
     <button class="button" sec:authorize="isAuthenticated()">

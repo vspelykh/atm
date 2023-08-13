@@ -10,45 +10,13 @@
 </head>
 <body>
 
-<div id="resultContainer">
+<div id="withdrawResultContainer">
 
 </div>
 <script th:inline="javascript">
 
     var amount = /*[[${amount}]]*/ null;
     var type = /*[[${type}]]*/ null;
-</script>
-
-<script>
-    $(document).ready(function () {
-        $.ajax({
-            url: '/api/withdraw',
-            type: 'POST',
-            data: JSON.stringify({amount: amount, type: type}),
-            contentType: 'application/json',
-            success: function (data) {
-                console.log(amount);
-                var resultContainer = $('#resultContainer');
-
-                resultContainer.empty();
-
-                data.forEach(function (banknote) {
-                    var banknoteInfo = 'Banknote: ' + banknote.denomination + ' grn, quantity: ' + banknote.quantity;
-                    var banknoteElement = $('<div>').text(banknoteInfo);
-                    resultContainer.append(banknoteElement);
-                });
-            },
-            error: function (xhr, textStatus, errorThrown) {
-                if (xhr.status === 400) {
-                    var resultContainer = $('#resultContainer');
-                    resultContainer.empty();
-                    resultContainer.append("Error");
-
-                } else {
-                }
-            }
-        });
-    });
 </script>
 <br>
 <div class="button-row">

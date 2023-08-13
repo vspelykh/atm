@@ -1,14 +1,12 @@
 package ua.vspelykh.atm.controller.rest;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.vspelykh.atm.controller.utils.TransferRequest;
 import ua.vspelykh.atm.model.dto.TransactionDTO;
 import ua.vspelykh.atm.service.TransactionService;
-import ua.vspelykh.atm.util.exception.AccountNotFoundException;
-import ua.vspelykh.atm.util.exception.NotEnoughMoneyToTransferException;
+import ua.vspelykh.atm.util.exception.ServiceException;
 
 import java.security.Principal;
 import java.util.List;
@@ -48,13 +46,10 @@ public class TransactionController {
      * @return ResponseEntity containing transaction details or a BAD_REQUEST response in case of insufficient funds.
      */
     @PostMapping(TRANSFER_URL)
-    public ResponseEntity<TransactionDTO> performTransfer(Principal principal, @RequestBody TransferRequest request) {
-        try {
-            TransactionDTO transaction =
-                    transactionService.performTransaction(request.getAmount(), principal.getName(), request.getAccountTo());
-            return ResponseEntity.ok(transaction);
-        } catch (NotEnoughMoneyToTransferException | AccountNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
+    public ResponseEntity<TransactionDTO> performTransfer(Principal principal,
+                                                          @RequestBody TransferRequest request) throws ServiceException {
+        TransactionDTO transaction =
+                transactionService.performTransaction(request.getAmount(), principal.getName(), request.getAccountTo());
+        return ResponseEntity.ok(transaction);
     }
 }

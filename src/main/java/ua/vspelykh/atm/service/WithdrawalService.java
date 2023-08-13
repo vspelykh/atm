@@ -16,11 +16,15 @@ import ua.vspelykh.atm.model.repository.WithdrawalRepository;
 import ua.vspelykh.atm.service.strategy.StrategyChecker;
 import ua.vspelykh.atm.service.strategy.StrategyType;
 import ua.vspelykh.atm.service.strategy.WithdrawStrategy;
-import ua.vspelykh.atm.util.exception.NoAvailableWithdrawStrategiesException;
+import ua.vspelykh.atm.util.exception.ServiceException;
 
+import java.security.Principal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import static ua.vspelykh.atm.util.exception.ExceptionMessages.NOT_ENOUGH_MONEY_TO_WITHDRAW;
+import static ua.vspelykh.atm.util.exception.ExceptionMessages.WITHDRAW_EXCEPTION;
 
 /**
  * Service class responsible for managing withdrawal operations.
@@ -45,22 +49,27 @@ public class WithdrawalService {
      *
      * @param amount The amount to withdraw.
      * @return A list of allowed strategy types.
+     * @throws ServiceException If the amount on the balance is not enough to withdraw money.
      */
-    public List<StrategyType> getPossibleStrategies(int amount) {
-        return strategyChecker.getAllowedStrategies(amount, banknoteRepository.findAllByAtmId(atmIdHolder.getAtmId()));
+    public List<StrategyType> getPossibleStrategies(int amount, Principal principal) throws ServiceException {
+        Account account = accountRepository.findByAccountNumber(principal.getName());
+        if (hasEnoughMoney(account, amount)) {
+            return strategyChecker.getAllowedStrategies(amount, banknoteRepository.findAllByAtmId(atmIdHolder.getAtmId()));
+        }
+        throw new ServiceException(NOT_ENOUGH_MONEY_TO_WITHDRAW);
     }
 
     /**
      * Performs a withdrawal using the specified strategy and deducts the amount from the account.
      *
-     * @param amount       The amount to withdraw.
-     * @param strategyType The strategy type to use for the withdrawal.
+     * @param amount        The amount to withdraw.
+     * @param strategyType  The strategy type to use for the withdrawal.
      * @param accountNumber The account number for the withdrawal.
      * @return A list of BanknoteDTO representing the withdrawn banknotes.
-     * @throws NoAvailableWithdrawStrategiesException If no valid withdrawal strategy is available.
+     * @throws ServiceException If no valid withdrawal strategy is available.
      */
     @Transactional
-    public List<BanknoteDTO> performWithdrawal(int amount, StrategyType strategyType, String accountNumber) throws NoAvailableWithdrawStrategiesException {
+    public List<BanknoteDTO> performWithdrawal(int amount, StrategyType strategyType, String accountNumber) throws ServiceException {
         WithdrawStrategy strategy = strategyChecker.getStrategy(strategyType);
         List<Banknote> availableBanknotes = banknoteRepository.findAllByAtmId(atmIdHolder.getAtmId());
         Account account = accountRepository.findByAccountNumber(accountNumber);
@@ -71,7 +80,7 @@ public class WithdrawalService {
             account.setBalance(account.getBalance() - amount);
             return strategy.withdraw(amount, availableBanknotes);
         } else {
-            throw new NoAvailableWithdrawStrategiesException();
+            throw new ServiceException(WITHDRAW_EXCEPTION);
         }
     }
 
