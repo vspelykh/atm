@@ -24,6 +24,8 @@ import java.util.List;
 
 /**
  * Service class responsible for managing withdrawal operations.
+ *
+ * @version 1.0
  */
 @Service
 @RequiredArgsConstructor
@@ -81,7 +83,7 @@ public class WithdrawalService {
      * @return True if the account has enough balance, false otherwise.
      */
     private boolean hasEnoughMoney(Account account, int amount) {
-        return accountRepository.existsByAccountNumberAndBalanceGreaterThanEqual(account.getAccountNumber(), amount);
+        return accountRepository.existsByAccountNumberAndBalanceGreaterThanEqual(account.getAccountNumber(), (double) amount);
     }
 
     /**

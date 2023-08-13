@@ -2,11 +2,11 @@ package ua.vspelykh.atm.model.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.Hibernate;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -30,6 +30,7 @@ public class Transaction extends AbstractBaseEntity {
 
     @NotNull
     @Column(name = AMOUNT)
+    @Positive
     private Double amount;
 
     @NotNull

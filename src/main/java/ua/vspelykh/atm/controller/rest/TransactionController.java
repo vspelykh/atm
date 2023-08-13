@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ua.vspelykh.atm.controller.utils.TransferRequest;
 import ua.vspelykh.atm.model.dto.TransactionDTO;
 import ua.vspelykh.atm.service.TransactionService;
+import ua.vspelykh.atm.util.exception.AccountNotFoundException;
 import ua.vspelykh.atm.util.exception.NotEnoughMoneyToTransferException;
 
 import java.security.Principal;
@@ -52,7 +53,7 @@ public class TransactionController {
             TransactionDTO transaction =
                     transactionService.performTransaction(request.getAmount(), principal.getName(), request.getAccountTo());
             return ResponseEntity.ok(transaction);
-        } catch (NotEnoughMoneyToTransferException e) {
+        } catch (NotEnoughMoneyToTransferException | AccountNotFoundException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }

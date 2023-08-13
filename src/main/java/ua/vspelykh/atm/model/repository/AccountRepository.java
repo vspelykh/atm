@@ -6,12 +6,36 @@ import ua.vspelykh.atm.model.entity.Account;
 
 import java.util.List;
 
+/**
+ * Repository interface for managing Account entities.
+ *
+ * @version 1.0
+ */
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Integer> {
 
+    /**
+     * Retrieves a list of accounts associated with a specific user.
+     *
+     * @param userId The ID of the user.
+     * @return A list of accounts associated with the user.
+     */
     List<Account> findAllByUserId(Integer userId);
 
+    /**
+     * Retrieves an account by its account number.
+     *
+     * @param accountNumber The account number to search for.
+     * @return The account with the specified account number, or null if not found.
+     */
     Account findByAccountNumber(String accountNumber);
 
-    boolean existsByAccountNumberAndBalanceGreaterThanEqual(String accountId, Integer amount);
+    /**
+     * Checks if an account with a specified account number has a balance greater than or equal to a given amount.
+     *
+     * @param accountNumber The account number to check.
+     * @param amount        The amount to compare the balance against.
+     * @return True if the account with the specified account number has a balance greater than or equal to the amount, false otherwise.
+     */
+    boolean existsByAccountNumberAndBalanceGreaterThanEqual(String accountNumber, Double amount);
 }

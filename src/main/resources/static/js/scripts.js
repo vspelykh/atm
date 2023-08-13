@@ -50,10 +50,8 @@ $(document).ready(function() {
             'Accept': 'application/json'
         },
         success: function(data) {
-            // Отримання контейнера для балансу
             var balanceContainer = $('#balanceContainer');
 
-            // Зміна розміру шрифту втричі більшим
             balanceContainer.text('Balance: ' + data.toFixed(2)).css('font-size', '300%');
         },
         error: function(xhr, status, error) {

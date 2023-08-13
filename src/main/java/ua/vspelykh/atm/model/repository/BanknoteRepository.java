@@ -6,8 +6,19 @@ import ua.vspelykh.atm.model.entity.Banknote;
 
 import java.util.List;
 
+/**
+ * Repository interface for managing Banknote entities.
+ *
+ * @version 1.0
+ */
 @Repository
 public interface BanknoteRepository extends JpaRepository<Banknote, Integer> {
 
-    List<Banknote> findAllByAtmId(Integer id);
+    /**
+     * Retrieves a list of banknotes available in a specific ATM.
+     *
+     * @param atmId The ID of the ATM.
+     * @return A list of banknotes available in the specified ATM.
+     */
+    List<Banknote> findAllByAtmId(Integer atmId);
 }

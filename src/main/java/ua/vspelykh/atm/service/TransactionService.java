@@ -10,6 +10,7 @@ import ua.vspelykh.atm.model.entity.Account;
 import ua.vspelykh.atm.model.entity.Transaction;
 import ua.vspelykh.atm.model.repository.AccountRepository;
 import ua.vspelykh.atm.model.repository.TransactionRepository;
+import ua.vspelykh.atm.util.exception.AccountNotFoundException;
 import ua.vspelykh.atm.util.exception.NotEnoughMoneyToTransferException;
 
 import java.security.Principal;
@@ -57,13 +58,21 @@ public class TransactionService {
      * @throws NotEnoughMoneyToTransferException If there are insufficient funds for the transfer.
      */
     @Transactional
-    public TransactionDTO performTransaction(Double amount, String accountFrom, String accountTo) throws NotEnoughMoneyToTransferException {
+    public TransactionDTO performTransaction(Double amount, String accountFrom, String accountTo) throws NotEnoughMoneyToTransferException, AccountNotFoundException {
         Account from = accountRepository.findByAccountNumber(accountFrom);
-        Account to = accountRepository.findByAccountNumber(accountTo);
+        Account to = getAccountTo(accountTo);
         double fee = getTransferFee(amount, from, to);
         Transaction transaction = verifyAndCreateTransaction(amount, fee, from, to);
         transactionRepository.save(transaction);
         return transactionConverter.toDto(transaction);
+    }
+
+    private Account getAccountTo(String accountTo) throws AccountNotFoundException {
+        Account to = accountRepository.findByAccountNumber(accountTo);
+        if(to == null){
+            throw new AccountNotFoundException();
+        }
+        return to;
     }
 
     /**
