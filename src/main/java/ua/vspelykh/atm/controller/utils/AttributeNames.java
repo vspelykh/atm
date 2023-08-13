@@ -14,5 +14,8 @@ public class AttributeNames {
     public static final String JSON = "application/json";
 
     public static final String AMOUNT = "amount";
+    public static final String DENOMINATIONS = "denominations";
     public static final String TYPE = "type";
+
+    public static final String ACCOUNT_TO = "accountTo";
 }

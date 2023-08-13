@@ -65,6 +65,12 @@ class BigBanknoteWithdrawStrategyTest extends AbstractStrategyTest {
     }
 
     @Test
+    void withdrawForbiddenStrangeAmount() {
+        assertFalse(strategy.isWithdrawPossible(111, fullBanknotes()));
+        assertEquals(Collections.emptyList(), strategy.withdraw(111, fullBanknotes()));
+    }
+
+    @Test
     void withdrawForbiddenBigAmount() {
         assertFalse(strategy.isWithdrawPossible(FORBIDDEN_AMOUNT, fullBanknotes()));
         assertEquals(Collections.emptyList(), strategy.withdraw(FORBIDDEN_AMOUNT, fullBanknotes()));

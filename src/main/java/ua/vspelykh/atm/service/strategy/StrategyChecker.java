@@ -3,9 +3,11 @@ package ua.vspelykh.atm.service.strategy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ua.vspelykh.atm.model.entity.Banknote;
+import ua.vspelykh.atm.util.exception.ServiceException;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static ua.vspelykh.atm.util.exception.ExceptionMessages.WITHDRAW_NOT_POSSIBLE;
 
 
 /**
@@ -20,11 +22,15 @@ public class StrategyChecker {
 
     private final List<WithdrawStrategy> withdrawalStrategies;
 
-    public List<StrategyType> getAllowedStrategies(int amountToWithdraw, List<Banknote> availableBanknotes) {
-        return withdrawalStrategies.stream()
+    public List<StrategyType> getAllowedStrategies(int amountToWithdraw, List<Banknote> availableBanknotes) throws ServiceException {
+        List<StrategyType> strategyTypes = withdrawalStrategies.stream()
                 .filter(strategy -> strategy.isWithdrawPossible(amountToWithdraw, availableBanknotes))
                 .map(WithdrawStrategy::getStrategyType)
-                .collect(Collectors.toList());
+                .toList();
+        if (strategyTypes.isEmpty()) {
+            throw new ServiceException(WITHDRAW_NOT_POSSIBLE);
+        }
+        return strategyTypes;
     }
 
     public WithdrawStrategy getStrategy(StrategyType strategyType) {

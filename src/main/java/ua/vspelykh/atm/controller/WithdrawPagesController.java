@@ -1,12 +1,16 @@
 package ua.vspelykh.atm.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import ua.vspelykh.atm.config.AtmIdHolder;
 import ua.vspelykh.atm.controller.utils.AttributeNames;
+import ua.vspelykh.atm.service.WithdrawalService;
 import ua.vspelykh.atm.service.strategy.StrategyType;
 
+import static ua.vspelykh.atm.controller.utils.AttributeNames.DENOMINATIONS;
 import static ua.vspelykh.atm.controller.utils.AttributeNames.TYPE;
 import static ua.vspelykh.atm.controller.utils.PageNames.*;
 import static ua.vspelykh.atm.controller.utils.PageUrls.*;
@@ -18,7 +22,11 @@ import static ua.vspelykh.atm.controller.utils.PageUrls.*;
  */
 @Controller
 @RequestMapping(WITHDRAW_URL)
+@RequiredArgsConstructor
 public class WithdrawPagesController {
+
+    private final WithdrawalService withdrawalService;
+    private final AtmIdHolder atmIdHolder;
 
     /**
      * Handles a GET request to the amount page.
@@ -26,7 +34,8 @@ public class WithdrawPagesController {
      * @return The name of the amount view to display.
      */
     @GetMapping(AMOUNT_URL)
-    public String index() {
+    public String amount(Model model) {
+        model.addAttribute(DENOMINATIONS, withdrawalService.getAvailableDenominations(atmIdHolder.getAtmId()));
         return AMOUNT;
     }
 

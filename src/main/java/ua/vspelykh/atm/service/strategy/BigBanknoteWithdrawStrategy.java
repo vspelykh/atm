@@ -126,7 +126,13 @@ public class BigBanknoteWithdrawStrategy extends AbstractWithdrawStrategy {
      */
     @Override
     public boolean isWithdrawPossible(int amountToWithdraw, List<Banknote> availableBanknotes) {
-        return getSumOfBanknotes(availableBanknotes) >= amountToWithdraw && amountToWithdraw >= MIN_AMOUNT;
+        if (amountToWithdraw < MIN_AMOUNT || amountToWithdraw > getSumOfBanknotes(availableBanknotes)) {
+            return false;
+        }
+        List<BanknoteDTO> banknoteDTOS = getBanknoteDTOS(amountToWithdraw, availableBanknotes);
+        boolean isPossible = !banknoteDTOS.isEmpty();
+        rollback(banknoteDTOS, availableBanknotes);
+        return isPossible;
     }
 
     /**

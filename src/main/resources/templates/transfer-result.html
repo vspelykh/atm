@@ -3,21 +3,22 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>SUCCESS! Take your cash!</title>
+    <title>Transfer result</title>
     <link rel="stylesheet" href="/css/styles.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="/js/scripts.js"></script>
 </head>
 <body>
 
-<div id="withdrawResultContainer">
+<div id="transferResultContainer">
 
 </div>
 <script th:inline="javascript">
 
     var amount = /*[[${amount}]]*/ null;
-    var type = /*[[${type}]]*/ null;
+    var accountTo = /*[[${accountTo}]]*/ null;
 </script>
+
 <br>
 <div class="button-row">
     <button class="button" sec:authorize="isAuthenticated()">
