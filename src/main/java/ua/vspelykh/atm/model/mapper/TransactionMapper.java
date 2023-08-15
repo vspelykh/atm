@@ -2,16 +2,14 @@ package ua.vspelykh.atm.model.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 import ua.vspelykh.atm.model.dto.TransactionDTO;
 import ua.vspelykh.atm.model.entity.Transaction;
 
+import static ua.vspelykh.atm.model.mapper.BaseMapperConfig.SPRING;
 import static ua.vspelykh.atm.model.util.Columns.*;
 
-@Mapper
+@Mapper(componentModel = SPRING, uses = {AccountMapper.class, BaseMapperConfig.class})
 public interface TransactionMapper {
-
-    TransactionMapper INSTANCE = Mappers.getMapper(TransactionMapper.class);
 
     @Mapping(source = ID, target = ID)
     @Mapping(source = AMOUNT, target = AMOUNT)

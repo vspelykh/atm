@@ -2,17 +2,15 @@ package ua.vspelykh.atm.model.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 import ua.vspelykh.atm.model.dto.UserDTO;
 import ua.vspelykh.atm.model.entity.User;
 import ua.vspelykh.atm.model.util.Columns;
 
+import static ua.vspelykh.atm.model.mapper.BaseMapperConfig.SPRING;
 import static ua.vspelykh.atm.model.util.Columns.*;
 
-@Mapper
+@Mapper(componentModel = SPRING,uses = BaseMapperConfig.class)
 public interface UserMapper {
-
-    UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
     @Mapping(target = Columns.ID, source = ENTITY_ID)
     @Mapping(target = FIRST_NAME, source = ENTITY_FIRST_NAME)

@@ -3,20 +3,20 @@ package ua.vspelykh.atm.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ua.vspelykh.atm.model.converter.TransactionConverter;
 import ua.vspelykh.atm.model.dto.TransactionDTO;
 import ua.vspelykh.atm.model.entity.Account;
 import ua.vspelykh.atm.model.entity.Transaction;
+import ua.vspelykh.atm.model.mapper.TransactionMapper;
 import ua.vspelykh.atm.model.repository.AccountRepository;
 import ua.vspelykh.atm.model.repository.TransactionRepository;
+import ua.vspelykh.atm.util.exception.RepositoryException;
 import ua.vspelykh.atm.util.exception.ServiceException;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static ua.vspelykh.atm.util.exception.ExceptionMessages.ACCOUNT_NOT_FOUND;
-import static ua.vspelykh.atm.util.exception.ExceptionMessages.NOT_ENOUGH_MONEY_TO_TRANSFER;
+import static ua.vspelykh.atm.util.exception.ExceptionMessages.*;
 
 /**
  * Service class responsible for handling transaction-related operations.
@@ -30,22 +30,26 @@ public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final AccountRepository accountRepository;
 
-    private final TransactionConverter transactionConverter;
+    private final TransactionMapper transactionMapper;
 
     /**
      * Retrieves a list of account numbers associated with the current user.
      *
      * @param principal The principal object representing the authenticated user.
      * @return A list of account numbers.
+     * @throws ServiceException If there are no user or account of user.
      */
-    public List<String> getAccountsOfCurrentUser(Principal principal) {
+    public List<String> getAccountsOfCurrentUser(Principal principal) throws ServiceException {
         String currentAccount = principal.getName();
-        Integer userId = accountRepository.findByAccountNumber(currentAccount).getUserId();
-
-        List<Account> accounts = accountRepository.findAllByUserId(userId);
-        return accounts.stream().map(Account::getAccountNumber)
-                .filter(accountNumber -> !accountNumber.equals(currentAccount))
-                .toList();
+        try {
+            Integer userId = getAccount(currentAccount).getUser().getId();
+            List<Account> accounts = accountRepository.findAllByUserId(userId);
+            return accounts.stream().map(Account::getAccountNumber)
+                    .filter(accountNumber -> !accountNumber.equals(currentAccount))
+                    .toList();
+        } catch (RepositoryException e) {
+            throw new ServiceException(ACCOUNT_OR_USER_NOT_FOUND);
+        }
     }
 
     /**
@@ -60,20 +64,17 @@ public class TransactionService {
      */
     @Transactional
     public TransactionDTO performTransaction(Double amount, String accountFrom, String accountTo) throws ServiceException {
-        Account from = accountRepository.findByAccountNumber(accountFrom);
-        Account to = getAccountTo(accountTo);
+        Account from = getAccount(accountFrom);
+        Account to = getAccount(accountTo);
         double fee = getTransferFee(amount, from, to);
         Transaction transaction = verifyAndCreateTransaction(amount, fee, from, to);
         transactionRepository.save(transaction);
-        return transactionConverter.toDto(transaction);
+        return transactionMapper.toDTO(transaction);
     }
 
-    private Account getAccountTo(String accountTo) throws ServiceException {
-        Account to = accountRepository.findByAccountNumber(accountTo);
-        if (to == null) {
-            throw new ServiceException(ACCOUNT_NOT_FOUND);
-        }
-        return to;
+    private Account getAccount(String accountNumber) throws ServiceException {
+        return accountRepository.findByAccountNumber(accountNumber)
+                .orElseThrow(() -> new ServiceException(ACCOUNT_NOT_FOUND));
     }
 
     /**
@@ -85,7 +86,7 @@ public class TransactionService {
      * @return The calculated transfer fee.
      */
     private double getTransferFee(Double amount, Account from, Account to) {
-        return !from.getUserId().equals(to.getUserId()) ? amount * 0.01 : 0;
+        return !from.getUser().getId().equals(to.getUser().getId()) ? amount * 0.01 : 0;
     }
 
     /**
@@ -98,7 +99,8 @@ public class TransactionService {
      * @return The created transaction object.
      * @throws ServiceException If there are insufficient funds for the transfer.
      */
-    private Transaction verifyAndCreateTransaction(Double amount, double fee, Account from, Account to) throws ServiceException {
+    private Transaction verifyAndCreateTransaction(Double amount, double fee, Account from, Account to) throws
+            ServiceException {
         double updatedFromBalance = from.getBalance() - amount;
         double updatedToBalance = to.getBalance() + amount - fee;
         if (updatedFromBalance >= 0) {

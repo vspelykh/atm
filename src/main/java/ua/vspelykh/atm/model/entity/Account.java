@@ -38,10 +38,6 @@ public class Account extends AbstractBaseEntity {
     @Column(name = BALANCE)
     private Double balance;
 
-    @NotNull
-    @Column(name = USER_ID, insertable = false, updatable = false)
-    private Integer userId;
-
     @NotBlank
     @Column(name = PASSWORD)
     private String password;

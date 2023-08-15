@@ -1,5 +1,6 @@
 package ua.vspelykh.atm.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,8 +24,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static ua.vspelykh.atm.util.exception.ExceptionMessages.NOT_ENOUGH_MONEY_TO_WITHDRAW;
-import static ua.vspelykh.atm.util.exception.ExceptionMessages.WITHDRAW_EXCEPTION;
+import static ua.vspelykh.atm.util.exception.ExceptionMessages.*;
 
 /**
  * Service class responsible for managing withdrawal operations.
@@ -52,7 +52,7 @@ public class WithdrawalService {
      * @throws ServiceException If the amount on the balance is not enough to withdraw money.
      */
     public List<StrategyType> getPossibleStrategies(int amount, Principal principal) throws ServiceException {
-        Account account = accountRepository.findByAccountNumber(principal.getName());
+        Account account = getAccountByNumber(principal.getName());
         if (hasEnoughMoney(account, amount)) {
             return strategyChecker.getAllowedStrategies(amount, banknoteRepository.findAllByAtmId(atmIdHolder.getAtmId()));
         }
@@ -72,8 +72,7 @@ public class WithdrawalService {
     public List<BanknoteDTO> performWithdrawal(int amount, StrategyType strategyType, String accountNumber) throws ServiceException {
         WithdrawStrategy strategy = strategyChecker.getStrategy(strategyType);
         List<Banknote> availableBanknotes = banknoteRepository.findAllByAtmId(atmIdHolder.getAtmId());
-        Account account = accountRepository.findByAccountNumber(accountNumber);
-
+        Account account = getAccountByNumber(accountNumber);
         if (strategy.isWithdrawPossible(amount, availableBanknotes) && hasEnoughMoney(account, amount)) {
             Withdrawal withdrawal = createWithdrawal(amount, account);
             withdrawalRepository.save(withdrawal);
@@ -82,6 +81,19 @@ public class WithdrawalService {
         } else {
             throw new ServiceException(WITHDRAW_EXCEPTION);
         }
+    }
+
+    private Account getAccountByNumber(String accountNumber) throws ServiceException {
+        try {
+            return getAccount(accountNumber);
+        } catch (EntityNotFoundException e) {
+            throw new ServiceException(ACCOUNT_OR_USER_NOT_FOUND);
+        }
+    }
+
+    private Account getAccount(String accountNumber) throws ServiceException {
+        return accountRepository.findByAccountNumber(accountNumber)
+                .orElseThrow(() -> new ServiceException(ACCOUNT_NOT_FOUND));
     }
 
     /**
@@ -112,7 +124,7 @@ public class WithdrawalService {
     }
 
     /**
-     * Methdod returns List of available denominations of banknotes in the current ATM.
+     * Method returns List of available denominations of banknotes in the current ATM.
      *
      * @param atmId id of current ATM.
      * @return List of available denominations of banknotes in the current ATM.
