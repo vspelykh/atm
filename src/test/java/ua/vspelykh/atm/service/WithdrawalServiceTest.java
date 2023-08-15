@@ -7,18 +7,22 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import ua.vspelykh.atm.model.dto.BanknoteDTO;
+import ua.vspelykh.atm.model.entity.Banknote;
+import ua.vspelykh.atm.model.entity.Withdrawal;
 import ua.vspelykh.atm.service.strategy.SmallBanknoteWithdrawStrategy;
 import ua.vspelykh.atm.service.strategy.StrategyChecker;
 import ua.vspelykh.atm.service.strategy.StrategyType;
+import ua.vspelykh.atm.util.exception.RepositoryException;
 import ua.vspelykh.atm.util.exception.ServiceException;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static ua.vspelykh.atm.service.ServiceTestData.*;
 import static ua.vspelykh.atm.service.strategy.StrategyTestData.fullBanknotes;
 
@@ -33,7 +37,7 @@ class WithdrawalServiceTest extends AbstractServiceTest {
     private SmallBanknoteWithdrawStrategy strategy;
 
     @BeforeEach
-    public void setup() throws ServiceException {
+    public void setup() throws ServiceException, RepositoryException {
         super.setup();
         withdrawalService = new WithdrawalService(withdrawalRepository, banknoteRepository,
                 accountRepository, atmRepository, strategyChecker, atmIdHolder());
@@ -60,6 +64,7 @@ class WithdrawalServiceTest extends AbstractServiceTest {
                 withdrawalService.performWithdrawal((int) AMOUNT_SMALL_VALUE, StrategyType.SMALL, ACCOUNT_NUMBER_VALUE);
         int sum = actual.stream().mapToInt(b -> b.getDenomination() * b.getQuantity()).sum();
         assertEquals(AMOUNT_SMALL_VALUE, sum);
+        verify(withdrawalRepository, times(1)).save(any(Withdrawal.class));
     }
 
     @Test
@@ -68,6 +73,7 @@ class WithdrawalServiceTest extends AbstractServiceTest {
                 .thenReturn(false);
         assertThrows(ServiceException.class, () ->
                 withdrawalService.performWithdrawal((int) AMOUNT_SMALL_VALUE, StrategyType.SMALL, ACCOUNT_NUMBER_VALUE));
+        verify(withdrawalRepository, never()).save(any(Withdrawal.class));
     }
 
     @Test
@@ -75,18 +81,21 @@ class WithdrawalServiceTest extends AbstractServiceTest {
         when(strategy.isWithdrawPossible(anyInt(), any())).thenReturn(false);
         assertThrows(ServiceException.class, () ->
                 withdrawalService.performWithdrawal((int) AMOUNT_SMALL_VALUE, StrategyType.SMALL, ACCOUNT_NUMBER_VALUE));
+        verify(withdrawalRepository, never()).save(any(Withdrawal.class));
     }
 
     @Test
     void performWithdrawalNullableParams() {
         assertThrows(ServiceException.class,
                 () -> withdrawalService.performWithdrawal((int) AMOUNT_SMALL_VALUE, null, null));
+        verify(withdrawalRepository, never()).save(any(Withdrawal.class));
+
     }
 
     @Override
-    protected void prepareMocks() throws ServiceException {
+    protected void prepareMocks() throws ServiceException, RepositoryException {
         when(principal.getName()).thenReturn(ACCOUNT_NUMBER_VALUE);
-        when(accountRepository.findByAccountNumber(ACCOUNT_NUMBER_VALUE)).thenReturn(getTestAccount());
+        when(accountRepository.findByAccountNumber(ACCOUNT_NUMBER_VALUE)).thenReturn(Optional.of(getTestAccount()));
         when(banknoteRepository.findAllByAtmId(ID_VALUE)).thenReturn(fullBanknotes());
         when(strategyChecker.getAllowedStrategies((int) AMOUNT_SMALL_VALUE, fullBanknotes())).thenReturn(getStrategyTypes());
         when(strategyChecker.getStrategy(any())).thenReturn(strategy);

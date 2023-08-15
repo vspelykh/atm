@@ -3,10 +3,12 @@ package ua.vspelykh.atm.service;
 import ua.vspelykh.atm.config.AtmIdHolder;
 import ua.vspelykh.atm.model.dto.BanknoteDTO;
 import ua.vspelykh.atm.model.entity.Account;
+import ua.vspelykh.atm.model.entity.Transaction;
 import ua.vspelykh.atm.model.entity.User;
 import ua.vspelykh.atm.service.strategy.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -14,6 +16,7 @@ class ServiceTestData {
 
     static final Integer ID_VALUE = 1;
     static final String ACCOUNT_NUMBER_VALUE = "1234567890123456";
+    static final String ACCOUNT_NUMBER_VALUE_2 = "1234567890987654";
     static final Double BALANCE_VALUE = 5000.00;
     static final LocalDate ISSUE_DATE_VALUE = LocalDate.of(2024, 10, 1);
     static final String PASSWORD_VALUE = "$2a$12$2Wsb3oNJfwe6N5Wz/FuzXOmXq2uowEmVenpEszVbNTNkJaSP1bMg6";
@@ -41,12 +44,47 @@ class ServiceTestData {
                 .build();
     }
 
+    static Account getTestAccount2() {
+        return Account.builder().id(ID_VALUE)
+                .accountNumber("1234567890987654")
+                .balance(BALANCE_VALUE)
+                .issueDate(ISSUE_DATE_VALUE)
+                .password(PASSWORD_VALUE)
+                .build();
+    }
+
     static Account getTestAccount() {
         return Account.builder().id(ID_VALUE)
                 .accountNumber(ACCOUNT_NUMBER_VALUE)
                 .balance(BALANCE_VALUE)
                 .issueDate(ISSUE_DATE_VALUE)
+                .user(User.builder()
+                        .id(ID_VALUE)
+                        .firstName(NAME_VALUE)
+                        .lastName(SURNAME_VALUE)
+                        .phoneNumber(NUMBER_VALUE)
+                        .role(ROLE_VALUE)
+                        .build())
                 .password(PASSWORD_VALUE)
+                .build();
+    }
+
+    static List<Account> getTestAccounts() {
+        Account account = Account.builder().id(ID_VALUE)
+                .accountNumber("1234567890987654")
+                .balance(BALANCE_VALUE)
+                .issueDate(ISSUE_DATE_VALUE)
+                .password(PASSWORD_VALUE)
+                .build();
+        return List.of(account, getTestAccount());
+    }
+
+    static Transaction getTestTransaction() {
+        return Transaction.builder().id(ID_VALUE)
+                .amount(AMOUNT_SMALL_VALUE)
+                .transactionDate(LocalDateTime.now())
+                .sourceAccount(getTestAccount())
+                .destinationAccount(getTestAccount2())
                 .build();
     }
 
@@ -59,7 +97,7 @@ class ServiceTestData {
                 new MixedBanknotesWithdrawStrategy(atmIdHolder()), new BigBanknoteWithdrawStrategy(atmIdHolder()));
     }
 
-    static BanknoteDTO getTestBanknoteDTO(){
+    static BanknoteDTO getTestBanknoteDTO() {
         return BanknoteDTO.builder()
                 .id(ID_VALUE)
                 .atmId(ID_VALUE)

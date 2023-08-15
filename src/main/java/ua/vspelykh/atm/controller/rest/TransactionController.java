@@ -33,7 +33,7 @@ public class TransactionController {
      * @return ResponseEntity containing a list of account identifiers.
      */
     @GetMapping(ACCOUNTS_URL)
-    public ResponseEntity<List<String>> getAccountsOfCurrentUser(Principal principal) {
+    public ResponseEntity<List<String>> getAccountsOfCurrentUser(Principal principal) throws ServiceException {
         List<String> accountsOfCurrentUser = transactionService.getAccountsOfCurrentUser(principal);
         return ResponseEntity.ok(accountsOfCurrentUser);
     }

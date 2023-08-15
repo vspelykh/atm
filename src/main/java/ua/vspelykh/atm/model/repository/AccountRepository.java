@@ -3,8 +3,10 @@ package ua.vspelykh.atm.model.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import ua.vspelykh.atm.model.entity.Account;
+import ua.vspelykh.atm.util.exception.RepositoryException;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Repository interface for managing Account entities.
@@ -20,7 +22,7 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
      * @param userId The ID of the user.
      * @return A list of accounts associated with the user.
      */
-    List<Account> findAllByUserId(Integer userId);
+    List<Account> findAllByUserId(Integer userId) throws RepositoryException;
 
     /**
      * Retrieves an account by its account number.
@@ -28,7 +30,7 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
      * @param accountNumber The account number to search for.
      * @return The account with the specified account number, or null if not found.
      */
-    Account findByAccountNumber(String accountNumber);
+    Optional<Account> findByAccountNumber(String accountNumber);
 
     /**
      * Checks if an account with a specified account number has a balance greater than or equal to a given amount.

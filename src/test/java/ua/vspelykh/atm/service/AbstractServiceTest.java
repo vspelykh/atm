@@ -6,6 +6,7 @@ import org.mockito.MockitoAnnotations;
 import ua.vspelykh.atm.model.mapper.AccountMapper;
 import ua.vspelykh.atm.model.mapper.TransactionMapper;
 import ua.vspelykh.atm.model.repository.*;
+import ua.vspelykh.atm.util.exception.RepositoryException;
 import ua.vspelykh.atm.util.exception.ServiceException;
 
 import java.security.Principal;
@@ -37,10 +38,10 @@ abstract class AbstractServiceTest {
     protected Principal principal;
 
     @BeforeEach
-    public void setup() throws ServiceException {
+    public void setup() throws ServiceException, RepositoryException {
         MockitoAnnotations.openMocks(this);
         prepareMocks();
     }
 
-    protected abstract void prepareMocks() throws ServiceException;
+    protected abstract void prepareMocks() throws ServiceException, RepositoryException;
 }
