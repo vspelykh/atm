@@ -22,6 +22,7 @@ import java.util.Optional;
 @Component
 public class SmallBanknoteWithdrawStrategy extends AbstractWithdrawStrategy {
 
+    private static final int MIN_AMOUNT = 50;
     private static final int MAX_AMOUNT = 400;
 
     /**
@@ -102,7 +103,7 @@ public class SmallBanknoteWithdrawStrategy extends AbstractWithdrawStrategy {
      */
     @Override
     public boolean isWithdrawPossible(int amountToWithdraw, List<Banknote> availableBanknotes) {
-        if (amountToWithdraw > MAX_AMOUNT) {
+        if (amountToWithdraw > MAX_AMOUNT || amountToWithdraw < MIN_AMOUNT) {
             return false;
         }
         Optional<Banknote> optionalBanknote = getBanknoteForVerify(availableBanknotes, DENOMINATION_50);

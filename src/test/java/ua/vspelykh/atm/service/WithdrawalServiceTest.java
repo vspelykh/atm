@@ -7,7 +7,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import ua.vspelykh.atm.model.dto.BanknoteDTO;
-import ua.vspelykh.atm.model.entity.Banknote;
 import ua.vspelykh.atm.model.entity.Withdrawal;
 import ua.vspelykh.atm.service.strategy.SmallBanknoteWithdrawStrategy;
 import ua.vspelykh.atm.service.strategy.StrategyChecker;
@@ -93,7 +92,7 @@ class WithdrawalServiceTest extends AbstractServiceTest {
     }
 
     @Override
-    protected void prepareMocks() throws ServiceException, RepositoryException {
+    protected void prepareMocks() throws ServiceException {
         when(principal.getName()).thenReturn(ACCOUNT_NUMBER_VALUE);
         when(accountRepository.findByAccountNumber(ACCOUNT_NUMBER_VALUE)).thenReturn(Optional.of(getTestAccount()));
         when(banknoteRepository.findAllByAtmId(ID_VALUE)).thenReturn(fullBanknotes());
