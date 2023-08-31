@@ -27,7 +27,7 @@ import static ua.vspelykh.atm.model.util.Tables.ACCOUNTS;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public final class Account extends AbstractBaseEntity {
+public class Account extends AbstractBaseEntity {
 
     @NotBlank
     @Size(max = 20)
